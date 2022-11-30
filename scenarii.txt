@@ -1,0 +1,51 @@
+Scenario du jeu:
+-1: SEE
+0: A
+1: B
+2: C
+3: D
+4: E
+5: Fx
+6: F
+7: ABS
+8: Jury
+9: TC05
+10: TC06 
+11: Réorientation
+
+
+Scenario: Voler une carte
+C'est le tour du joueur A. L'interface demande au joueur de faire un choix entre la pioche et la défausse.Il demande de piocher une carte dans la pioche. 
+La première carte de la pioche se retourne, tous les joueurs peuvent la voir.L'interface demande si quelqu'un veut la carte. Le joueur C clique sur "oui". 
+Le joueur A peut voir le jeu du jour C,et l'interface lui demande s'il accepte ou non. Le joueur A accepte. Le joueur C joue la carte volée, 
+en cliquant sur une de ses carte qui ser aremplacée par cette dernière. Fin du tour du joueur C. L'interface demande au joueur A de selectionner 
+une carte du joueur C. Il la selectionne. Il remplace cette carte dans son jeu en cliquant sur une des cartes et la carte défaussée remplace la 
+carte volée dans le jeu du joueur C.
+
+Scenario: Prendre dans la défausse
+C'est le tour du joueur A.L'interface demande au joueur de faire un choix entre la pioche et la défausse. Il demande la carte de la défausse. 
+L'interface lui demande de sélectionner la carte qu'il veut remplacer. Le joueur A sélectionne une carte.
+La carte du joueur est retournée si face cachée et part dans la défausse. La carte de la défausse remplace celle du joueur A dans son jeu. Fin du tour du joueur A.
+
+
+Scenario: faire une ligne de 3
+C'est le tour du joueur A. L'interface demande au joueur de faire un choix entre la pioche et la défausse. Il choisit la piohe. Le joueur A a deux 7 en ligne.
+L'interface retourne la première carte de la pioche. La carte est un 7. L'interface demande au joueur si il veut jouer la carte. Le joueur sélectionne oui.
+L'interface demande au joueur de sélectionner une carte à échanger contre le 7. Le joueur A sélectionne la carte à côté de ses deux 7 cote a cote. 
+La carte sélectionnée part dans la défausse, et le 7 la remplace. L'interface détecte la suite de 3x7. Elle affiche que le joueur A a une suite de 3 cartes identiques.
+Les cartes disparaissent de l'interface (prennent la valeur 0), les trous ne sont pas comblés. Fin du tour du joueur A.
+
+
+Scenario: Ne rien piocher
+C'est le tour du joueur A. L'interface demande au joueur de faire un choix entre la pioche et la défausse. Le joueur choisit la pioche. L'interface retourne 
+la première carte de la pioche. Elle demande aux joueurs si quelqu'un veut voler la carte. Les joueurs B, C, D répondent non. L'interface demande au joueur A
+si il veut jouer la carte. Le joueur répond non. L'interface demande au joueur de sélectionner une de ses cartes à retourner. Le joueur clique sur la 
+carte qu'il veut retourner. Fin du tour du joueur A.
+
+
+Scénario: Gagner la partie
+Le joueur A n'a plus qu'une carte face cachée. Cas du scénario "ne rien piocher". Le joueur clique sur la seule carte qu'il peut retourner. L'inerface affiche que 
+le joueur A a retourné toutes ses cartes. Fin du tour du joueur A. Les joueurs B,C,D font leur tour. A la fin du tour du joueur D, l'interface affiche que c'est
+la fin de la partie. Les eventuelles cartes face cachées des joueurs sont retournées, et les points sont comptés. L'interface affiche le nom du joueur gagnant.
+Si ex-aequo, l'interface affiche qu deux joueurs sont ex aequo.
+

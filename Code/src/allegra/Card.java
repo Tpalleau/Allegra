@@ -29,4 +29,10 @@ public class Card {
 	{
 		return this.visible;
 	}
+	
+	public Card(int setValue)
+	{
+		value = setValue;
+		visible = false;
+	}
 }

@@ -7,9 +7,9 @@ public class Card {
 	/**
 	 * @brief This method allows us to flip the card
 	 */
-	public void returnCard()
+	public void flipCard()
 	{
-		this.visible = !visible;
+		this.visible = true;
 	}
 	
 	/**
@@ -32,7 +32,7 @@ public class Card {
 	
 	public Card(int setValue)
 	{
-		value = setValue;
-		visible = false;
+		this.value = setValue;
+		this.visible = false;
 	}
 }

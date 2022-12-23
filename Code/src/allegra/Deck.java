@@ -5,7 +5,12 @@ import java.util.Collections;
 import java.util.List;
 
 public class Deck {
-	protected List<Card> cards = new ArrayList<Card>();
+	protected List<Card> cards = new ArrayList<>();
+
+	public Deck(){
+		fillDeck();
+		Collections.shuffle(this.cards);
+	}
 	
 	public Card pickCard()
 	{		
@@ -29,13 +34,16 @@ public class Deck {
 		
 		for (int i=0; i<8; i++)
 			for (int j=8; j<12; j++)
-				cards.add(new Card(j));
-		
+				cards.add(new Card(j));	
 	}
 
-	public Deck(){
-		fillDeck();
-		Collections.shuffle(this.cards);
-		System.out.println(cards.size());
+	public List<Card> dealCards(){
+		// create a copy of sublist
+		List<Card> cardsDealt = new ArrayList<>(this.cards.subList(0, 15));
+
+		//remove dealt cards
+		this.cards.subList(0, 15).clear();
+
+		return cardsDealt;
 	}
 }

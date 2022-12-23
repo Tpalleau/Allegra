@@ -1,7 +1,27 @@
 package allegra;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameManager {
+	protected List<PlayerMatrix> listPlayers = new ArrayList<>();
+	protected Deck deck = new Deck();
+	protected PlayerMatrix playerPlaying;
+
+	/**
+	 * init all Cards -> create shuffled Deck -> deal cards to PlayerMatrix, Discard
+	 * @param num_players
+	 */
+	public void init(int numPlayers)
+	{
+		for (int player = 0; player < numPlayers; player++) {
+
+			this.listPlayers.add(new PlayerMatrix(deck.dealCards()));
+		}
+	
+		this.playerPlaying = this.listPlayers.get(0);
+
+	}
+
 	
 	/**
 	 * remove card from chosen deck and return the card
@@ -48,31 +68,5 @@ public class GameManager {
 	 */
 	protected boolean checkEndGame(){
 		return false;
-	}
-
-	
-	/**
-	 * init all Cards -> create shuffled Deck -> deal cards to PlayerMatrix, Discard
-	 * @param players_number
-	 */
-	private void init(int players_number)
-	{
-		// for (int i = 0; i < players_number; i++)
-		// {
-		// 	final PlayerMatrix player = new PlayerMatrix();
-		// 	this.listOfPlayers.add(player);
-		// }
-			
-		// this.deck.fillDeck();
-		// this.deck.shuffle();
-			
-		// //ADD THE PART WHERE PLAYERS RECEIVE CARD
-			
-		// this.discard.cards.clear();
-		// this.discard.cards.add(this.deck.pickCard());
-		// this.discard.cards.get(0).returnCard();
-			
-		// //ADD THE PART WHERE WE DETERMINE THE FIRST PLAYER
-
 	}
 }

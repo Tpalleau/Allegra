@@ -1,5 +1,6 @@
 package allegra;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerMatrix {
@@ -8,40 +9,49 @@ public class PlayerMatrix {
 	//(A list composed of five lists of three elements,
 	//instead of a list composed of three lists of five elements)
 	//(This is to make sure we can have the shared column work correctly)
-	protected List<List<Card>> matrix;
+	protected List<List<Card>> matrix = new ArrayList<>();
 	protected boolean lastTurn;
+
+	public PlayerMatrix(List<Card> dealedCards){
+		// add list of 3 cards for each column (5 columns)
+		for (int i = 0; i < 5; i++) {
+			this.matrix.add(
+				new ArrayList<>(//list of cards
+					dealedCards.subList(i*3, i*3+3)));//3 cards
+		}
+	}
 	
 	protected Card replaceCard(int x, int y, Card c)
 	{
-		final Card temp = this.matrix.get(x).get(y);
+		final Card discCard = this.matrix.get(x).get(y);
 		this.matrix.get(x).set(y, c);
-		return temp;
+		return discCard;
 	}
 	
 	protected int seeCard(int x, int y)
 	{
+		this.matrix.get(x).get(y).flipCard();
 		return this.matrix.get(x).get(y).getValue();
 	}
 	
 	//Since there are only three cards vertically, we don't need to know precisely which card we flipped,
 	//The column is enough
 	private int[] checkAllignedVertical(int y)
-	{
-		final int[] arr = new int[6];
-		
+	{		
 		//On two separate lines to read this more easily
-		if (this.matrix.get(0).get(y).getValue() == this.matrix.get(1).get(y).getValue())
-			if (this.matrix.get(2).get(y).getValue() == this.matrix.get(1).get(y).getValue())
-			{
-				arr[1] = arr[3] = arr[5] = y;
-				arr[0] = 0;
-				arr[2] = 1;
-				arr[4] = 2;
-				return arr;
-			}
+		// if (this.matrix.get(0).get(y).getValue() == this.matrix.get(1).get(y).getValue())
+		// 	if (this.matrix.get(2).get(y).getValue() == this.matrix.get(1).get(y).getValue())
+		// 	{
+		// 		arr[1] = arr[3] = arr[5] = y;
+		// 		arr[0] = 0;
+		// 		arr[2] = 1;
+		// 		arr[4] = 2;
+		// 		return arr;
+		// 	}
 		
-		arr[0] = -1;
-		return arr;
+		// arr[0] = -1;
+		// return arr;
+		return null;
 	}
 	
 	//CAN MAYBE BE OPTIMISED

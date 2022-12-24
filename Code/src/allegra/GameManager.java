@@ -74,9 +74,9 @@ public class GameManager {
 	 * the card in param is sent to discard
 	 * @param card
 	 */
-	public void discardCard(Card card){
+	public void discardCard(Card card){discardPile.discardCard(card);}
 
-	}
+	public int showTopDiscardPile(){return discardPile.showTopCard();}
 	
 	/**
 	 * card2 from stealcoord is replaced with card1 from coord and vice versa
@@ -86,8 +86,10 @@ public class GameManager {
 	 * @param player
 	 * @param stealCoord
 	 */
-	public void stealCard(List<Integer> coord,PlayerMatrix player, List<Integer> stealCoord){
-
+	public void stealCard(int[] coord,PlayerMatrix player, int[] stealCoord){
+		Card cardHolder = player.replaceCard(stealCoord[0], stealCoord[1], null);
+		cardHolder = playerPlaying.replaceCard(coord[0], coord[1], cardHolder);
+		player.replaceCard(stealCoord[0], stealCoord[1], cardHolder);
 	}
 
 	/**

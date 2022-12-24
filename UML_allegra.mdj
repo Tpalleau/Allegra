@@ -1913,7 +1913,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 684,
-									"top": 792,
+									"top": 793,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 15,
@@ -1934,7 +1934,7 @@
 									"visible": null,
 									"font": "Arial;13;0",
 									"left": 673,
-									"top": 802,
+									"top": 803,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 30,
@@ -1955,7 +1955,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 705,
-									"top": 771,
+									"top": 772,
 									"height": 13,
 									"alpha": -1.5707963267948966,
 									"distance": 15,
@@ -1975,7 +1975,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 685,
+									"left": 684,
 									"top": 792,
 									"height": 13,
 									"alpha": 0.5235987755982988,
@@ -1996,7 +1996,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 674,
+									"left": 673,
 									"top": 800,
 									"height": 13,
 									"alpha": 0.7853981633974483,
@@ -2017,7 +2017,7 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 707,
+									"left": 706,
 									"top": 776,
 									"height": 13,
 									"alpha": -0.5235987755982988,
@@ -2038,8 +2038,8 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 684,
-									"top": 792,
+									"left": 685,
+									"top": 794,
 									"height": 13,
 									"alpha": -0.5235987755982988,
 									"distance": 30,
@@ -2058,8 +2058,8 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 676,
-									"top": 802,
+									"left": 677,
+									"top": 804,
 									"height": 13,
 									"alpha": -0.7853981633974483,
 									"distance": 40,
@@ -2078,8 +2078,8 @@
 									},
 									"visible": false,
 									"font": "Arial;13;0",
-									"left": 701,
-									"top": 769,
+									"left": 702,
+									"top": 771,
 									"height": 13,
 									"alpha": 0.5235987755982988,
 									"distance": 25,
@@ -2126,7 +2126,7 @@
 								"$ref": "AAAAAAGEpT7x9ZIDBDA="
 							},
 							"lineStyle": 1,
-							"points": "714:807;677:769",
+							"points": "713:807;678:771",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAGEpVHxu72Oe+Q="
@@ -2185,7 +2185,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 398,
-									"top": 740,
+									"top": 741,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 15,
@@ -2206,7 +2206,7 @@
 									"visible": null,
 									"font": "Arial;13;0",
 									"left": 391,
-									"top": 727,
+									"top": 728,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 30,
@@ -2227,7 +2227,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 411,
-									"top": 767,
+									"top": 768,
 									"height": 13,
 									"alpha": -1.5707963267948966,
 									"distance": 15,
@@ -2248,7 +2248,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 346,
-									"top": 767,
+									"top": 768,
 									"height": 13,
 									"alpha": 0.5235987755982988,
 									"distance": 30,
@@ -2269,7 +2269,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 342,
-									"top": 754,
+									"top": 755,
 									"height": 13,
 									"alpha": 0.7853981633974483,
 									"distance": 40,
@@ -2290,7 +2290,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 355,
-									"top": 793,
+									"top": 794,
 									"height": 13,
 									"alpha": -0.5235987755982988,
 									"distance": 25,
@@ -2311,7 +2311,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 449,
-									"top": 713,
+									"top": 714,
 									"height": 13,
 									"alpha": -0.5235987755982988,
 									"distance": 30,
@@ -2331,7 +2331,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 440,
-									"top": 703,
+									"top": 704,
 									"height": 13,
 									"alpha": -0.7853981633974483,
 									"distance": 40,
@@ -2351,7 +2351,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 465,
-									"top": 736,
+									"top": 737,
 									"height": 13,
 									"alpha": 0.5235987755982988,
 									"distance": 25,
@@ -2398,7 +2398,7 @@
 								"$ref": "AAAAAAGEpUHlepLGlVE="
 							},
 							"lineStyle": 1,
-							"points": "331:799;479:721",
+							"points": "331:800;479:722",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAGEpVSUbwN8+oM="
@@ -2562,7 +2562,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 791,
-									"top": 784,
+									"top": 785,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 15,
@@ -2583,7 +2583,7 @@
 									"visible": null,
 									"font": "Arial;13;0",
 									"left": 784,
-									"top": 797,
+									"top": 798,
 									"height": 13,
 									"alpha": 1.5707963267948966,
 									"distance": 30,
@@ -2604,7 +2604,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 804,
-									"top": 757,
+									"top": 758,
 									"height": 13,
 									"alpha": -1.5707963267948966,
 									"distance": 15,
@@ -2625,7 +2625,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 889,
-									"top": 832,
+									"top": 833,
 									"height": 13,
 									"alpha": 0.5235987755982988,
 									"distance": 30,
@@ -2646,7 +2646,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 881,
-									"top": 843,
+									"top": 844,
 									"height": 13,
 									"alpha": 0.7853981633974483,
 									"distance": 40,
@@ -2667,7 +2667,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 905,
-									"top": 810,
+									"top": 811,
 									"height": 13,
 									"alpha": -0.5235987755982988,
 									"distance": 25,
@@ -2688,7 +2688,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 694,
-									"top": 736,
+									"top": 737,
 									"height": 13,
 									"alpha": -0.5235987755982988,
 									"distance": 30,
@@ -2708,7 +2708,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 690,
-									"top": 749,
+									"top": 750,
 									"height": 13,
 									"alpha": -0.7853981633974483,
 									"distance": 40,
@@ -2728,7 +2728,7 @@
 									"visible": false,
 									"font": "Arial;13;0",
 									"left": 702,
-									"top": 710,
+									"top": 711,
 									"height": 13,
 									"alpha": 0.5235987755982988,
 									"distance": 25,
@@ -2775,7 +2775,7 @@
 								"$ref": "AAAAAAGEpUDUHZJ+h9o="
 							},
 							"lineStyle": 1,
-							"points": "919:837;678:718",
+							"points": "919:838;678:719",
 							"showVisibility": true,
 							"nameLabel": {
 								"$ref": "AAAAAAGEpWY5EavrSEk="
@@ -2995,7 +2995,7 @@
 											"top": 651,
 											"width": 187.865234375,
 											"height": 13,
-											"text": "#card pickCard(deck_type)",
+											"text": "+card pickCard(deck_type)",
 											"horizontalAlignment": 0
 										},
 										{
@@ -3012,7 +3012,7 @@
 											"top": 666,
 											"width": 187.865234375,
 											"height": 13,
-											"text": "#card replaceCard(coord, card)",
+											"text": "+card replaceCard(coord, card)",
 											"horizontalAlignment": 0
 										},
 										{
@@ -3029,7 +3029,7 @@
 											"top": 681,
 											"width": 187.865234375,
 											"height": 13,
-											"text": "#discardCard(Card)",
+											"text": "+discardCard(Card)",
 											"horizontalAlignment": 0
 										},
 										{
@@ -3046,7 +3046,7 @@
 											"top": 696,
 											"width": 187.865234375,
 											"height": 13,
-											"text": "#stealCard(card, player)",
+											"text": "+stealCard(card, player)",
 											"horizontalAlignment": 0
 										},
 										{
@@ -3063,7 +3063,7 @@
 											"top": 711,
 											"width": 187.865234375,
 											"height": 13,
-											"text": "#bool checkEndGame()",
+											"text": "+bool checkEndGame()",
 											"horizontalAlignment": 0
 										},
 										{
@@ -3097,7 +3097,24 @@
 											"top": 741,
 											"width": 187.865234375,
 											"height": 13,
-											"text": "-init(num_player)",
+											"text": "+init(num_player)",
+											"horizontalAlignment": 0
+										},
+										{
+											"_type": "UMLOperationView",
+											"_id": "AAAAAAGFROTu7j8eJFs=",
+											"_parent": {
+												"$ref": "AAAAAAGEpU6VKKgIJAo="
+											},
+											"model": {
+												"$ref": "AAAAAAGFROTuhz8P5io="
+											},
+											"font": "Arial;13;0",
+											"left": 485,
+											"top": 756,
+											"width": 187.865234375,
+											"height": 13,
+											"text": "+showTopDiscardPile()",
 											"horizontalAlignment": 0
 										}
 									],
@@ -3105,7 +3122,7 @@
 									"left": 480,
 									"top": 646,
 									"width": 197.865234375,
-									"height": 113
+									"height": 128
 								},
 								{
 									"_type": "UMLReceptionCompartmentView",
@@ -3148,7 +3165,7 @@
 							"left": 480,
 							"top": 568,
 							"width": 197.865234375,
-							"height": 201,
+							"height": 206,
 							"nameCompartment": {
 								"$ref": "AAAAAAGEpU6VJ6gCu+A="
 							},
@@ -6473,7 +6490,6 @@
 												"$ref": "AAAAAAGEpU6VJqf/2IA="
 											},
 											"name": "card pickCard",
-											"visibility": "protected",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
@@ -6493,7 +6509,6 @@
 												"$ref": "AAAAAAGEpU6VJqf/2IA="
 											},
 											"name": "card replaceCard",
-											"visibility": "protected",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
@@ -6522,7 +6537,6 @@
 												"$ref": "AAAAAAGEpU6VJqf/2IA="
 											},
 											"name": "discardCard",
-											"visibility": "protected",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
@@ -6542,7 +6556,6 @@
 												"$ref": "AAAAAAGEpU6VJqf/2IA="
 											},
 											"name": "stealCard",
-											"visibility": "protected",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
@@ -6570,8 +6583,7 @@
 											"_parent": {
 												"$ref": "AAAAAAGEpU6VJqf/2IA="
 											},
-											"name": "bool checkEndGame",
-											"visibility": "protected"
+											"name": "bool checkEndGame"
 										},
 										{
 											"_type": "UMLOperation",
@@ -10112,7 +10124,6 @@
 													]
 												}
 											],
-											"visibility": "private",
 											"parameters": [
 												{
 													"_type": "UMLParameter",
@@ -10124,6 +10135,14 @@
 													"type": ""
 												}
 											]
+										},
+										{
+											"_type": "UMLOperation",
+											"_id": "AAAAAAGFROTuhz8P5io=",
+											"_parent": {
+												"$ref": "AAAAAAGEpU6VJqf/2IA="
+											},
+											"name": "showTopDiscardPile"
 										}
 									]
 								},
@@ -10170,7 +10189,8 @@
 												"$ref": "AAAAAAGFQ5kbOte2yjM="
 											},
 											"name": "cards",
-											"visibility": "private"
+											"visibility": "private",
+											"type": ""
 										}
 									],
 									"operations": [

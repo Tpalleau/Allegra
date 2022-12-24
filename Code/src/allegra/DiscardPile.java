@@ -2,7 +2,7 @@ package allegra;
 
 public class DiscardPile extends Pile {
 	/**
-	 * @brief This method allows players to discard their card and add it on top of the discard pile
+	 * @brief card sent to top of pile (top pile is index 0)
 	 * @param c The card that the player discards
 	 */
 	public void discardCard(Card c)
@@ -11,8 +11,8 @@ public class DiscardPile extends Pile {
 	}
 	
 	/**
-	 * @brief This method gives us the value of the top card in the discard pile
-	 * @return The value of the top card
+	 * @brief returns the value of the top card
+	 * @return int
 	 */
 	public int showTopCard()
 	{

@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class DrawPile extends Pile{
-	protected List<Card> cards = new ArrayList<>();
 
 	public DrawPile(){
 		fillDeck();

@@ -4,13 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerMatrix {
-	
-	//MAY NEED SOME REWORK TO MAKE SURE IT'S IN THE RIGHT "DIRECTION"
-	//(A list composed of five lists of three elements,
-	//instead of a list composed of three lists of five elements)
-	//(This is to make sure we can have the shared column work correctly)
-	protected List<List<Card>> matrix = new ArrayList<>();
-	protected boolean lastTurn;
+
+	private List<List<Card>> matrix = new ArrayList<>();
+	private boolean lastTurn;
+
+	//temporary method for DEBUG keep till end of project
+	public void showMatrix(){
+		System.out.println("matrix size:" + this.matrix.size());
+		for (int i = 0; i < this.matrix.size(); i++) {
+			System.out.println("	matrix subsize:" + this.matrix.get(i).size());
+			for (int j = 0; j < this.matrix.get(i).size(); j++) {
+				System.out.print(this.matrix.get(i).get(j).getValue() + " ");
+			}
+		}
+	}
 
 	public PlayerMatrix(List<Card> dealedCards){
 		// add list of 3 cards for each column (5 columns)

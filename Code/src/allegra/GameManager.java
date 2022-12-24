@@ -4,27 +4,46 @@ import java.util.List;
 
 public class GameManager {
 	protected List<PlayerMatrix> listPlayers = new ArrayList<>();
-	protected Deck deck = new Deck();
+	protected DrawPile drawPile = new DrawPile();
+	protected DiscardPile discardPile = new DiscardPile();
 	protected PlayerMatrix playerPlaying;
 
+
 	/**
-	 * init all Cards -> create shuffled Deck -> deal cards to PlayerMatrix, Discard
+	 * deal cards to PlayerMatrix, Discard
 	 * @param num_players
 	 */
 	public void init(int numPlayers)
 	{
+		List<Card> dealtCards = drawPile.dealCards(numPlayers);
+
+		//deal card to Discard
+		this.discardPile.discardCard(dealtCards.remove(0));
+
 		for (int player = 0; player < numPlayers; player++) {
+			// last player has list composed of last 12 + first 3 cards (shared columns)
+			if (player == numPlayers-1){
 
-			this.listPlayers.add(new PlayerMatrix(deck.dealCards()));
+				List<Card> matrixList = dealtCards.subList(player*12, player*12+12);
+				matrixList.addAll(dealtCards.subList(0, 3));
+				this.listPlayers.add(new PlayerMatrix(matrixList));
+			}
+			else{
+				this.listPlayers.add(new PlayerMatrix(dealtCards.subList(player*12, player*12+15)));
+			}
 		}
-	
+		
 		this.playerPlaying = this.listPlayers.get(0);
+	}
 
+	// TEMP method for debug
+	protected void showMatrix(){
+		this.listPlayers.forEach(player -> player.showMatrix());
 	}
 
 	
 	/**
-	 * remove card from chosen deck and return the card
+	 * remove card from chosen drawPile and return the card
 	 * @param deckType
 	 * @return the top card of the deck
 	 */

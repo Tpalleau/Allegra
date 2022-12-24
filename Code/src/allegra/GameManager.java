@@ -95,6 +95,11 @@ public class GameManager {
 	 * @return bool
 	 */
 	public boolean checkEndGame(){
-		return false;
+		for (PlayerMatrix player : listPlayers) {
+			if (!player.checkAllVisible()) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

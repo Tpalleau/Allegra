@@ -13,9 +13,15 @@ public class PlayerMatrix {
 		System.out.println("matrix size:" + this.matrix.size());
 		for (int i = 0; i < this.matrix.size(); i++) {
 			System.out.println("	matrix subsize:" + this.matrix.get(i).size());
+			System.out.print("    ");
 			for (int j = 0; j < this.matrix.get(i).size(); j++) {
-				System.out.print(this.matrix.get(i).get(j).getValue() + " ");
+				if (matrix.get(i).get(j) == null){
+					System.out.print("null ");
+				}else{
+					System.out.print(this.matrix.get(i).get(j).getValue() + " ");
+				}
 			}
+			System.out.println("    ");
 		}
 	}
 
@@ -28,11 +34,10 @@ public class PlayerMatrix {
 		}
 	}
 	
-	protected Card replaceCard(int x, int y, Card c)
+	protected Card replaceCard(int x, int y, Card card)
 	{
-		final Card discCard = this.matrix.get(x).get(y);
-		this.matrix.get(x).set(y, c);
-		return discCard;
+		// returns value that was swapped
+		return this.matrix.get(x).set(y, card);
 	}
 	
 	protected int seeCard(int x, int y)
@@ -41,71 +46,124 @@ public class PlayerMatrix {
 		return this.matrix.get(x).get(y).getValue();
 	}
 	
-	//Since there are only three cards vertically, we don't need to know precisely which card we flipped,
-	//The column is enough
-	private int[] checkAllignedVertical(int y)
-	{		
-		//On two separate lines to read this more easily
-		// if (this.matrix.get(0).get(y).getValue() == this.matrix.get(1).get(y).getValue())
-		// 	if (this.matrix.get(2).get(y).getValue() == this.matrix.get(1).get(y).getValue())
-		// 	{
-		// 		arr[1] = arr[3] = arr[5] = y;
-		// 		arr[0] = 0;
-		// 		arr[2] = 1;
-		// 		arr[4] = 2;
-		// 		return arr;
-		// 	}
-		
-		// arr[0] = -1;
-		// return arr;
+	/**
+	 * check if 3 cards have identical value in 1 column
+	 * @param x coord of the column to check
+	 * @return bool 
+	 */
+	private boolean checkAllignedVertical(int x)
+	{	
+		// contains only 3 cards per column so if missing card then no allignment
+		if (this.matrix.get(x).contains(null)) {
+			return false;
+		}
+
+		// check if card is visible and same value
+		int firstCard = this.matrix.get(x).get(0).getValue();
+		for (Card card : this.matrix.get(x)) {
+			if (!card.getVisible() || card.getValue() != firstCard){
+				return false;
+			}
+		}
+
+		return true;
+	}
+	
+	/**
+	 * check if 3 cards alligned
+	 * @param y line to check
+	 * @return 3 coords of x axis
+	 */
+	private List<Integer> checkAllignedHorizontal(int y)
+	{
+		// create list that will contain the index of the identical values of cards
+		List<Integer> counterIndex = new ArrayList<>();
+
+		// the card value to check with the other neighbor cards set to impossible value
+		int checkCard = -2;
+		for (int i = 0; i < this.matrix.size(); i++) {
+			// if same value and visible
+			if (matrix.get(i).get(y) == null) {
+				//skip empty card
+				;
+			}else if (matrix.get(i).get(y).getVisible() && matrix.get(i).get(y).getValue() == checkCard) {
+				// add index to the list
+				counterIndex.add(i);
+
+				// if 3 indexes (3 alligned cards)
+				if (counterIndex.size() == 3) {
+					//convert to int[] and return
+					return counterIndex;
+			}
+			}else{
+				// reset counterIndex
+				counterIndex.clear();
+				if (matrix.get(i).get(y).getVisible()){
+					// reset with new card to compare
+					checkCard = matrix.get(i).get(y).getValue();
+					counterIndex.add(i);
+				}else{
+					// set to impossible value so checkCard gets reset next iteration
+					checkCard = -2;
+				}
+			}
+		}
+
+		// if no cards where found return null
 		return null;
 	}
 	
-	//CAN MAYBE BE OPTIMISED
-	//-> TO REWORK BECAUSE IT DOESN'T TAKE INTO ACCOUNT THE SHARED COLUMNS
-	private int[] checkAllignedHorizontal(int x, int y)
+	/**
+	 * remove alligned cards if any found, first vertical then horizontal (arbitrary choice)
+	 *@param Card[] cards to be sent to discard
+	 */
+	protected List<Card> removeAligned()
 	{
-		final int[] arr = new int[6];
-		
-		if (x==0)
-		{
-			if (this.matrix.get(0).get(y).getValue() == this.matrix.get(1).get(y).getValue())
-				if (this.matrix.get(2).get(y).getValue() == this.matrix.get(1).get(y).getValue())
-				{
-					arr[1] = arr[3] = arr[5] = y;
-					arr[0] = 0;
-					arr[2] = 1;
-					arr[4] = 2;
-					return arr;
+		// vertical removal
+		for (int x = 0; x < 5; x++) {
+			// returns bool
+			if (this.checkAllignedVertical(x)){
+				List<Card> cardsToDiscard = this.matrix.get(x);
+
+				// remove cards from the matrix
+				for (int y = 0; y < 3; y++) {
+					matrix.get(x).set(y, null);
 				}
+				return cardsToDiscard;
+			}
+			// nothing found so check for next column
 		}
-			
-		else
-			if (this.matrix.get(0).get(y).getValue() == this.matrix.get(1).get(y).getValue())
-				if (this.matrix.get(2).get(y).getValue() == this.matrix.get(1).get(y).getValue())
-				{
-					arr[1] = arr[3] = arr[5] = y;
-					arr[0] = 1;
-					arr[2] = 2;
-					arr[4] = 3;
-					return arr;
+
+		// if no verticial removal then do horizontal
+		for (int y = 0; y < 3; y++) {
+			// returns x coords of cards to remove
+			List<Integer> coordCardsToDiscard = this.checkAllignedHorizontal(y);
+			List<Card> cardsToDiscard = new ArrayList<>();
+
+			// check if cards to discard are found
+			if (coordCardsToDiscard != null) {
+				System.out.print("cards to discard ");
+				for (int x : coordCardsToDiscard) {
+					cardsToDiscard.add(matrix.get(x).get(y));
+
+					// remove card from matrix
+					this.matrix.get(x).set(y, null);
 				}
-		arr[0] = -1;
-		return arr;
-	}
-	
-	//TO UPDATE ACCORDING TO HOW THE GAME REACTS TO REMOVED CARDS
-	protected void removeAligned(int[] coords)
-	{
-		if (coords[0] != -1)
-			for (int i=0; i<3; i++) this.matrix.get(coords[2*i]).set(coords[2*i + 1], null);
+				return cardsToDiscard;
+			}
+			// nothing found so check for next line
+		}
+
+		return null;
 	}
 	
 	protected boolean checkAllVisible()
 	{
 		for (int x=0; x<3; x++)
 			for (int y=0; y<4; y++)
-				if (this.matrix.get(x).get(y).getVisible())
+
+				//check if coord is not empty then check if visible
+				if (this.matrix.get(x).get(y) != null && !this.matrix.get(x).get(y).getVisible())
 				{
 					return false;
 				}

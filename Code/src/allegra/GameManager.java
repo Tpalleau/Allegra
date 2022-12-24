@@ -37,8 +37,11 @@ public class GameManager {
 	}
 
 	// TEMP method for debug
-	protected void showMatrix(){
+	public void showAllMatrix(){
 		this.listPlayers.forEach(player -> player.showMatrix());
+	}
+	public void showMatrix(){
+		playerPlaying.showMatrix();
 	}
 
 	
@@ -47,7 +50,7 @@ public class GameManager {
 	 * @param deckType
 	 * @return the top card of the deck
 	 */
-	protected Card pickCard(int deckType){
+	public Card pickCard(int deckType){
 		return null;
 		
 	}
@@ -57,15 +60,21 @@ public class GameManager {
 	 * @param coord
 	 * @param card
 	 */
-	protected void cardReplace(List<Integer> coord, Card card){
-
-	}
+	public void replaceCard(int x, int y, Card card){
+		if (card != null){
+			card.flipCard();
+		}
+		discardPile.discardCard(
+		playerPlaying.replaceCard(x, y, card));// returns card that is sent to discard
+	
+		playerPlaying.removeAligned();
+}
 
 	/**
 	 * the card in param is sent to discard
 	 * @param card
 	 */
-	protected void discardCard(Card card){
+	public void discardCard(Card card){
 
 	}
 	
@@ -77,7 +86,7 @@ public class GameManager {
 	 * @param player
 	 * @param stealCoord
 	 */
-	protected void stealCard(List<Integer> coord,PlayerMatrix player, List<Integer> stealCoord){
+	public void stealCard(List<Integer> coord,PlayerMatrix player, List<Integer> stealCoord){
 
 	}
 
@@ -85,7 +94,7 @@ public class GameManager {
 	 * iterate through all PlayerMatrix to check if all players have played last turn
 	 * @return bool
 	 */
-	protected boolean checkEndGame(){
+	public boolean checkEndGame(){
 		return false;
 	}
 }

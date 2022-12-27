@@ -12,7 +12,8 @@ public class Menu extends JFrame
 {
 
 	public Menu() //création d'une fenetre pour choisir le nombre de joueurs
-				  //pour l'instant, appuyer sur un bouton ferme la fenetre et termine le programme
+				  //les boutons ferme juste la page
+				  // pour des histoires de tests, le bouton Joueur6 ouvre GameGUI
 	{
 		getContentPane().setLayout(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -25,66 +26,65 @@ public class Menu extends JFrame
 		getContentPane().add(labelJoueurs);
 		
 		
-		JButton Joueur2 = new JButton("2 joueurs");
-		Joueur2.setBounds(68, 101, 89, 23);
-		getContentPane().add(Joueur2);
-		Joueur2.addActionListener(new ActionListener() 
+		JButton joueur2 = new JButton("2 joueurs");
+		joueur2.setBounds(68, 101, 89, 23);
+		getContentPane().add(joueur2);
+		joueur2.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				setFocusable(false);
 				dispose();
-				System.exit(0);
 			}
 		});
 		
-		JButton Joueur3 = new JButton("3 joueurs");
-		Joueur3.setBounds(68, 160, 89, 23);
-		getContentPane().add(Joueur3);
-		Joueur3.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				setFocusable(false);
-				dispose();
-				System.exit(0);
-			}
-		});
-		
-		JButton Joueur4 = new JButton("4 joueurs");
-		Joueur4.setBounds(247, 101, 89, 23);
-		getContentPane().add(Joueur4);
-		Joueur4.addActionListener(new ActionListener() 
+		JButton joueur3 = new JButton("3 joueurs");
+		joueur3.setBounds(68, 160, 89, 23);
+		getContentPane().add(joueur3);
+		joueur3.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				setFocusable(false);
 				dispose();
-				System.exit(0);
 			}
 		});
 		
-		JButton Joueur5 = new JButton("5 joueurs");
-		Joueur5.setBounds(247, 160, 89, 23);
-		getContentPane().add(Joueur5);
-		Joueur5.addActionListener(new ActionListener() 
+		JButton joueur4 = new JButton("4 joueurs");
+		joueur4.setBounds(247, 101, 89, 23);
+		getContentPane().add(joueur4);
+		joueur4.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				setFocusable(false);
 				dispose();
-				System.exit(0);
 			}
 		});
 		
-		JButton Joueur6 = new JButton("6 joueurs");
-		Joueur6.setBounds(159, 220, 89, 23);
-		getContentPane().add(Joueur6);
-		Joueur6.addActionListener(new ActionListener() 
+		JButton joueur5 = new JButton("5 joueurs");
+		joueur5.setBounds(247, 160, 89, 23);
+		getContentPane().add(joueur5);
+		joueur5.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent e) 
 			{
 				setFocusable(false);
 				dispose();
-				System.exit(0);
+
+			}
+		});
+		
+		JButton joueur6 = new JButton("6 joueurs");
+		joueur6.setBounds(159, 220, 89, 23);
+		getContentPane().add(joueur6);
+		joueur6.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				setFocusable(false);
+				new GameGUI().setVisible(true);
+				dispose();
 			}
 		});
 

@@ -12,8 +12,6 @@ public class Menu extends JFrame
 {
 
 	public Menu() //création d'une fenetre pour choisir le nombre de joueurs
-				  //les boutons ferme juste la page
-				  // pour des histoires de tests, le bouton Joueur6 ouvre GameGUI
 	{
 		getContentPane().setLayout(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -34,6 +32,7 @@ public class Menu extends JFrame
 			public void actionPerformed(ActionEvent e) 
 			{
 				setFocusable(false);
+				new GameGUI(2).setVisible(true);
 				dispose();
 			}
 		});
@@ -46,6 +45,7 @@ public class Menu extends JFrame
 			public void actionPerformed(ActionEvent e) 
 			{
 				setFocusable(false);
+				new GameGUI(3).setVisible(true);
 				dispose();
 			}
 		});
@@ -58,6 +58,7 @@ public class Menu extends JFrame
 			public void actionPerformed(ActionEvent e) 
 			{
 				setFocusable(false);
+				new GameGUI(4).setVisible(true);
 				dispose();
 			}
 		});
@@ -70,6 +71,7 @@ public class Menu extends JFrame
 			public void actionPerformed(ActionEvent e) 
 			{
 				setFocusable(false);
+				new GameGUI(5).setVisible(true);
 				dispose();
 
 			}
@@ -83,7 +85,7 @@ public class Menu extends JFrame
 			public void actionPerformed(ActionEvent e) 
 			{
 				setFocusable(false);
-				new GameGUI().setVisible(true);
+				new GameGUI(6).setVisible(true);
 				dispose();
 			}
 		});

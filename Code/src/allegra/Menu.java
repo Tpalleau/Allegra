@@ -11,7 +11,7 @@ import javax.swing.JButton;
 public class Menu extends JFrame
 {
 
-	public Menu() //création d'une fenetre pour choisir le nombre de joueurs
+	public Menu() //crï¿½ation d'une fenetre pour choisir le nombre de joueurs
 	{
 		getContentPane().setLayout(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

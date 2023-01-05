@@ -1,4 +1,4 @@
-package allegra;
+package GUI;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -11,7 +11,7 @@ import javax.swing.JButton;
 public class Menu extends JFrame
 {
 
-	public Menu() //cr�ation d'une fenetre pour choisir le nombre de joueurs
+	public Menu() //cration d'une fenetre pour choisir le nombre de joueurs
 	{
 		getContentPane().setLayout(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -29,8 +29,8 @@ public class Menu extends JFrame
 		getContentPane().add(joueur2);
 		joueur2.addActionListener(new ActionListener() 
 		{
-			public void actionPerformed(ActionEvent e) 
-			{
+			@Override
+			public void actionPerformed(ActionEvent e) {
 				setFocusable(false);
 				new GameGUI(2).setVisible(true);
 				dispose();

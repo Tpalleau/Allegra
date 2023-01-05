@@ -50,14 +50,18 @@ public class GameManager {
 	 * @param deckType
 	 * @return the top card of the deck
 	 */
-	public Card pickCard(int deckType){
-		return null;
-		
+	public Card pickCard(int deckType) {
+		// returns card that is sent to discard
+		return switch (deckType) {
+			case 0 -> drawPile.pickCard();
+			case 1 -> discardPile.pickCard();
+			default -> null;
+		};
 	}
 
 	/**
 	 * replace card in the player matrix at the coords and the new card is placed in the discard
-	 * @param coord
+	 * @param x & y
 	 * @param card
 	 */
 	public void replaceCard(int x, int y, Card card){
@@ -66,7 +70,7 @@ public class GameManager {
 		}
 		discardPile.discardCard(
 		playerPlaying.replaceCard(x, y, card));// returns card that is sent to discard
-	
+
 		playerPlaying.removeAligned();
 }
 
@@ -77,7 +81,7 @@ public class GameManager {
 	public void discardCard(Card card){discardPile.discardCard(card);}
 
 	public int showTopDiscardPile(){return discardPile.showTopCard();}
-	
+
 	/**
 	 * card2 from stealcoord is replaced with card1 from coord and vice versa
 	 * old: card1 in coord and card2 in coord2

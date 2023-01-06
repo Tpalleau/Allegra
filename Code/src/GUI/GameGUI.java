@@ -3,8 +3,8 @@ package GUI;
 import allegra.Card;
 import allegra.GameManager;
 
+import tools.*;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +30,7 @@ class GameGUI extends JFrame
 		PICKPILE,
 		PILEPICKED,
 		REPLACE,
+		FLIPCARD,
 		STEAL,
 		STEALPICK
 	}
@@ -39,6 +40,10 @@ class GameGUI extends JFrame
 	private int indexPlayerPlaying = 0;
 
 	private JLabel narrator;
+	private JPanel pilePanels;
+
+	private Card cardInUse;
+
 
 	public GameGUI(int nbPlayers)
 	{
@@ -48,35 +53,72 @@ class GameGUI extends JFrame
 		StageMessage.put(Stage.STEAL, "replace with one of your own");
 		StageMessage.put(Stage.STEALPICK, "pick a card you wish to steal");
 		StageMessage.put(Stage.REPLACE, "replace with one of your cards");
+		StageMessage.put(Stage.FLIPCARD, "pick a card to flip");
 
 
 		this.createScreen();
 		this.pile();
 		this.listPlayers = this.drawPlayerButtons(nbPlayers);
 		this.game = new GameManager(nbPlayers);
+		this.pilePanels.getComponent(1);
 	}
 
-	// CONTROLLER
 	class CardListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			Object source = e.getSource();		
-			JButton button = (JButton) source;
+			JButton card = (JButton) e.getSource();
+			int cardIndex = listPlayers.get(indexPlayerPlaying).getComponentZOrder(card);
 
-			int cardIndex = listPlayers.get(0).getComponentZOrder(button);
-			if (cardIndex != -1) {
-				switch (currentStage) {
-					case PILEPICKED:
-						break;
-					case REPLACE:
-						break;
-					case STEAL:
-						break;
-					case STEALPICK:
-						break;
-				}
+			System.out.println(cardIndex);
+			switch (currentStage) {
+				case PILEPICKED:
+					int[] index = ConvertCoord.convert(cardIndex);
+					game.replaceCard(index[0], index[1], cardInUse);
+					break;
+				case REPLACE:
+					break;
+				case STEAL:
+					break;
+				case STEALPICK:
+					break;
+			}	
+		}
+	}
+
+	class PileListener implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JButton pile = (JButton) e.getSource();
+
+			int pileIndex = pilePanels.getComponentZOrder(pile);
+			// drawPile -> 0
+			// discardPile -> 1
+
+			switch (currentStage) {
+				case PICKPILE:
+					cardInUse = game.pickCard(pileIndex);
+					currentStage = Stage.PILEPICKED;
+					if (pileIndex == 0){// if draw then disable draw because can still discard
+						pile.setEnabled(false);
+						JPanelExtensions.setEnabled(listPlayers.get(indexPlayerPlaying), true);
+	
+					}else{ // if discard then disable all
+						;
+						// JPanelExtensions.setEnabled(pilePanels, false);
+						JPanelExtensions.setEnabled(listPlayers.get(indexPlayerPlaying), false);
+						indexPlayerPlaying = (indexPlayerPlaying+1)%listPlayers.size();
+						JPanelExtensions.setEnabled(listPlayers.get(indexPlayerPlaying), true);
+					}
+					break;
+
+				case PILEPICKED:
+					assert pileIndex == 1;
+					game.discardCard(cardInUse);
+					currentStage = Stage.FLIPCARD;
+					break;
+				default:
+					break;
 			}
-			
 		}
 	}
 
@@ -93,16 +135,20 @@ class GameGUI extends JFrame
 	}
 
 	private void pile(){
-		JButton btnDeck = new JButton();
-		btnDeck.setBounds(451, 296, 64, 64);
-		btnDeck.setIcon(new ImageIcon("ressources\\dos.jpg"));
-		getContentPane().add(btnDeck);
+		pilePanels = new JPanel(new GridLayout(1, 2,20, 0));
+		pilePanels.setBounds(451, 296, 64*2+20, 64);
 
-		JButton btnDefausse = new JButton();
-		btnDefausse.setBounds(525, 296, 64, 64);
-		getContentPane().add(btnDefausse);
 
-		narrator = new JLabel("pick a card p" + 1);
+		JButton drawPile = new JButton(new ImageIcon("ressources\\dos.jpg"));
+		drawPile.addActionListener(new PileListener());
+
+		JButton discardPile = new JButton();
+		discardPile.addActionListener(new PileListener());
+
+
+		pilePanels.add(drawPile);
+		pilePanels.add(discardPile);
+		container.add(pilePanels);
 	}
 
 	private List<JPanel> drawPlayerButtons(int nbPlayers){
@@ -176,7 +222,7 @@ class GameGUI extends JFrame
 			}
 
 			// deactivate all cards for 1st turn
-			playerPanels.get(playerN).setEnabled(false);
+			JPanelExtensions.setEnabled(playerPanels.get(playerN), false);
 		}
 
 		return playerPanels;

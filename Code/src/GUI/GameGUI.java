@@ -5,7 +5,9 @@ import allegra.GameManager;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -26,16 +28,28 @@ class GameGUI extends JFrame
 	private enum Stage {
 		CHECKWIN,
 		PICKPILE,
-		REPLACECARD,
-		SHOWCARD,
-		STEAL
+		PILEPICKED,
+		REPLACE,
+		STEAL,
+		STEALPICK
 	}
+	Map<Stage, String> StageMessage = new HashMap();
 
 	private Stage currentStage = Stage.PICKPILE;
-	private int indexPlayerPlaying;
+	private int indexPlayerPlaying = 0;
+
+	private JLabel narrator;
 
 	public GameGUI(int nbPlayers)
 	{
+		// messages
+		StageMessage.put(Stage.PICKPILE, "pick a card from a pile P");
+		StageMessage.put(Stage.PILEPICKED, "replace with a card or discard it P");
+		StageMessage.put(Stage.STEAL, "replace with one of your own");
+		StageMessage.put(Stage.STEALPICK, "pick a card you wish to steal");
+		StageMessage.put(Stage.REPLACE, "replace with one of your cards");
+
+
 		this.createScreen();
 		this.pile();
 		this.listPlayers = this.drawPlayerButtons(nbPlayers);
@@ -52,13 +66,13 @@ class GameGUI extends JFrame
 			int cardIndex = listPlayers.get(0).getComponentZOrder(button);
 			if (cardIndex != -1) {
 				switch (currentStage) {
-					case REPLACECARD:
+					case PILEPICKED:
 						break;
-					case SHOWCARD:
+					case REPLACE:
 						break;
 					case STEAL:
 						break;
-					default:
+					case STEALPICK:
 						break;
 				}
 			}
@@ -87,6 +101,8 @@ class GameGUI extends JFrame
 		JButton btnDefausse = new JButton();
 		btnDefausse.setBounds(525, 296, 64, 64);
 		getContentPane().add(btnDefausse);
+
+		narrator = new JLabel("pick a card p" + 1);
 	}
 
 	private List<JPanel> drawPlayerButtons(int nbPlayers){

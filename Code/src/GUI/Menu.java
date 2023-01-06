@@ -19,6 +19,7 @@ public class Menu extends JFrame
         this.setSize(420,350);
         this.setLocationRelativeTo(null);
         this.setResizable(false);
+		this.setVisible(true);
 
 		// create main label
 		JLabel labelJoueurs = new JLabel("Choisissez le nombre de joueurs");
@@ -74,6 +75,6 @@ public class Menu extends JFrame
 	
 	public static void main(String[] args) 
 	{
-		new Menu().setVisible(true);
+		new Menu();
 	}
 }

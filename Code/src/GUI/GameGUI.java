@@ -1,34 +1,72 @@
 package GUI;
 
-import java.awt.Dimension;
-import java.awt.Image;
-import java.awt.LayoutManager;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Function;
+import allegra.Card;
+import allegra.GameManager;
 
-import javax.imageio.ImageIO;
-import javax.swing.GroupLayout;
-import javax.swing.Icon;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import java.awt.BorderLayout;
-import java.awt.Color;
-
-import javax.swing.JToggleButton;
 import javax.swing.JPanel;
-import javax.swing.JSplitPane;
 import javax.swing.JLabel;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+
 import java.awt.GridLayout;
 import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class GameGUI extends JFrame
+class GameGUI extends JFrame
 {
 	private Container container;
+	private GameManager game;
+	private List<JPanel> listPlayers;
+	private enum Stage {
+		CHECKWIN,
+		PICKPILE,
+		REPLACECARD,
+		SHOWCARD,
+		STEAL
+	}
+
+	private Stage currentStage = Stage.PICKPILE;
+	private int indexPlayerPlaying;
+
+	public GameGUI(int nbPlayers)
+	{
+		this.createScreen();
+		this.pile();
+		this.listPlayers = this.drawPlayerButtons(nbPlayers);
+		this.game = new GameManager(nbPlayers);
+	}
+
+	// CONTROLLER
+	class CardListener implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			Object source = e.getSource();		
+			JButton button = (JButton) source;
+
+			int cardIndex = listPlayers.get(0).getComponentZOrder(button);
+			if (cardIndex != -1) {
+				switch (currentStage) {
+					case REPLACECARD:
+						break;
+					case SHOWCARD:
+						break;
+					case STEAL:
+						break;
+					default:
+						break;
+				}
+			}
+			
+		}
+	}
+
+	// GUI
 
 	private void createScreen(){
 		getContentPane().setLayout(null);
@@ -45,27 +83,13 @@ public class GameGUI extends JFrame
 		btnDeck.setBounds(451, 296, 64, 64);
 		btnDeck.setIcon(new ImageIcon("ressources\\dos.jpg"));
 		getContentPane().add(btnDeck);
-		btnDeck.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-
-			}
-		});
 
 		JButton btnDefausse = new JButton();
 		btnDefausse.setBounds(525, 296, 64, 64);
 		getContentPane().add(btnDefausse);
-		btnDefausse.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-
-			}
-		});
 	}
 
-	private List<JPanel> playerButtonsDraw(int nbPlayers){
+	private List<JPanel> drawPlayerButtons(int nbPlayers){
 		List<JPanel> playerPanels = new ArrayList<>();
 		// coord of panels
 		int xPlayerPanel;
@@ -85,8 +109,6 @@ public class GameGUI extends JFrame
 		final int PLAYER_GAP = 58;
 		final int YUI_GAP = 131;
 
-		
-		
 		//create panel for each player
 		for (int playerN = 0; playerN < nbPlayers; playerN++) {
 			// calculate panel coord
@@ -131,19 +153,16 @@ public class GameGUI extends JFrame
 			for (int cardN = 0; cardN < 12; ++cardN)
 			{
 				JButton Button = new JButton(new ImageIcon("ressources\\dos.jpg"));
+				Button.addActionListener(new CardListener());
 				playerPanels.get(playerN).add(Button);
 				container.add(playerPanels.get(playerN));
 				container.add(UIpanel);
 			}
+
+			// deactivate all cards for 1st turn
+			playerPanels.get(playerN).setEnabled(false);
 		}
 
 		return playerPanels;
-	}
-
-	public GameGUI(int nbPlayers)
-	{
-		this.createScreen();
-		this.pile();
-		List<JPanel> playerPanels = this.playerButtonsDraw(nbPlayers);
 	}
 }

@@ -8,7 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
 
-public class Menu extends JFrame
+class Menu extends JFrame
 {
 
 	public Menu() //cration d'une fenetre pour choisir le nombre de joueurs

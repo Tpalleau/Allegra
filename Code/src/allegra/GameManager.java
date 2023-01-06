@@ -13,7 +13,7 @@ public class GameManager {
 	 * deal cards to PlayerMatrix, Discard
 	 * @param num_players
 	 */
-	public void init(int numPlayers)
+	public GameManager(int numPlayers)
 	{
 		List<Card> dealtCards = drawPile.dealCards(numPlayers);
 

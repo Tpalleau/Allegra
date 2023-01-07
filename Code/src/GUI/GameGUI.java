@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -171,8 +170,6 @@ class GameGUI extends JFrame
 		// coord of panels
 		int xPlayerPanel;
 		int yPlayerPanel;
-		int xUIPanel;
-		int yUIPanel;
 
 		final int CARD_GAP = 10;
 		final int CARD_SIZE = 64;
@@ -180,11 +177,9 @@ class GameGUI extends JFrame
 		// width and height of the panels
 		final int WIDTH_PLAYER = CARD_SIZE*4 + CARD_GAP*3;
 		final int HEIGHT_PLAYER = CARD_SIZE*3 + CARD_GAP*2;
-		final int HEIGHT_UI = 31;
 
 		// gap between each JPANEL
 		final int PLAYER_GAP = 58;
-		final int YUI_GAP = 131;
 
 		//create panel for each player
 		for (int playerN = 0; playerN < nbPlayers; playerN++) {
@@ -195,36 +190,20 @@ class GameGUI extends JFrame
 				//start x coord: X + distance between each right side panel * n player
 
 				xPlayerPanel = 39 + (WIDTH_PLAYER + PLAYER_GAP)*((playerN)%3);
-				xUIPanel = xPlayerPanel;
 			}else{
 				// draw left to right
 				xPlayerPanel = 39 + (WIDTH_PLAYER + PLAYER_GAP)*2 - (WIDTH_PLAYER + PLAYER_GAP)*(playerN - 3);
-				xUIPanel = xPlayerPanel;
 			}
 
 			if (playerN < 3) {
 				yPlayerPanel = 11;
-				yUIPanel = 228;
 			} else {
 				yPlayerPanel = 11 + HEIGHT_PLAYER*2;
-				yUIPanel = 228 + HEIGHT_UI + YUI_GAP;
 			}
 
 			// create card panel
 			playerPanels.add(new JPanel(new GridLayout(3, 4, CARD_GAP, CARD_GAP)));
 			playerPanels.get(playerN).setBounds(xPlayerPanel, yPlayerPanel, WIDTH_PLAYER, HEIGHT_PLAYER);
-
-			// UI panel
-			JPanel UIpanel = new JPanel(new GridLayout(1, 4, 40, 0));
-			UIpanel.setBounds(xUIPanel, yUIPanel, WIDTH_PLAYER, HEIGHT_UI);
-
-			// add buttons and labels to UI panel
-			JButton stealButton = new JButton("voler");
-			JLabel lblPion = new JLabel(new ImageIcon("ressources\\pion.png"));
-			JLabel lblPlayer = new JLabel("Joueur" + (playerN+1));
-			UIpanel.add(stealButton);
-			UIpanel.add(lblPlayer);
-			UIpanel.add(lblPion);
 
 			// add cards to player panel
 			for (int cardN = 0; cardN < 12; ++cardN)
@@ -233,13 +212,44 @@ class GameGUI extends JFrame
 				Button.addActionListener(new CardListener());
 				playerPanels.get(playerN).add(Button);
 				container.add(playerPanels.get(playerN));
-				container.add(UIpanel);
 			}
 
 			// deactivate all cards for 1st turn
 			tools.setEnabled(playerPanels.get(playerN), false);
+			drawUI(nbPlayers);
 		}
 
 		return playerPanels;
+	}
+	public void drawUI(int nbPlayers){
+		final int VGAP = 210;
+		final int HGAP = 131;
+		final int WIDTH_UI = 138;
+		final int HEIGHT_UI = 31;
+		int xUI = 47, yUI = 228;
+		for (int playerN = 0; playerN < nbPlayers; playerN++) {
+			JPanel UIpanel = new JPanel(new GridLayout(1, 4, 40, 0));
+			JLabel name = new JLabel("player"+(playerN+1));
+			JLabel pion = new JLabel(new ImageIcon("ressources\\pion.png"));
+			
+			// shift when changing from top to bottom
+			xUI += (playerN == 3) ? 138 : 0;
+			yUI = 228 + (HGAP+HEIGHT_UI) * (playerN/3);
+			if (playerN < 3){ // top grid UI is on right side
+				UIpanel.setBounds(xUI , yUI, WIDTH_UI, HEIGHT_UI);
+				xUI += VGAP + WIDTH_UI;
+
+				UIpanel.add(pion);
+				UIpanel.add(name);
+			}else{ // bottom grid UI is on the left side
+				
+				xUI -= VGAP + WIDTH_UI;
+				UIpanel.setBounds(xUI , yUI, WIDTH_UI, HEIGHT_UI);
+
+				UIpanel.add(name);
+				UIpanel.add(pion);
+			}
+			container.add(UIpanel);
+		}
 	}
 }

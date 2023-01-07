@@ -44,6 +44,9 @@ public class GameManager {
 		playerPlaying.showMatrix();
 	}
 
+	public int FlipCard(int x, int y){
+		return playerPlaying.flipCard(x, y);
+	}
 	
 	/**
 	 * remove card from chosen drawPile and return the card
@@ -60,18 +63,14 @@ public class GameManager {
 	}
 
 	/**
-	 * replace card in the player matrix at the coords and the new card is placed in the discard
+	 * replace card in the player matrix at the coords and return value of card sent to discard
 	 * @param x & y
 	 * @param card
 	 */
-	public void replaceCard(int x, int y, Card card){
-		if (card != null){
-			card.flipCard();
-		}
-		discardPile.discardCard(
-		playerPlaying.replaceCard(x, y, card));// returns card that is sent to discard
-
-		playerPlaying.removeAligned();
+	public int replaceCard(int x, int y, Card card){
+		Card removedCard = playerPlaying.replaceCard(x, y, card);
+		discardCard(removedCard);
+		return removedCard.getValue();
 }
 
 	/**

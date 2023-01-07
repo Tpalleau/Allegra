@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -28,10 +29,10 @@ class GameGUI extends JFrame
 	private enum Stage {
 		CHECKWIN,
 		PICKPILE,
-		PILEPICKED,
+		DRAWPILE,
 		REPLACE,
 		FLIPCARD,
-		STEAL,
+		STEALREPLACE,
 		STEALPICK
 	}
 	Map<Stage, String> StageMessage = new HashMap();
@@ -40,6 +41,7 @@ class GameGUI extends JFrame
 	private int indexPlayerPlaying = 0;
 
 	private JLabel narrator;
+	private JButton endStage;
 	private JPanel pilePanels;
 
 	private Card cardInUse;
@@ -49,35 +51,45 @@ class GameGUI extends JFrame
 	{
 		// messages
 		StageMessage.put(Stage.PICKPILE, "pick a card from a pile P");
-		StageMessage.put(Stage.PILEPICKED, "replace with a card or discard it P");
-		StageMessage.put(Stage.STEAL, "replace with one of your own");
-		StageMessage.put(Stage.STEALPICK, "pick a card you wish to steal");
-		StageMessage.put(Stage.REPLACE, "replace with one of your cards");
-		StageMessage.put(Stage.FLIPCARD, "pick a card to flip");
+		StageMessage.put(Stage.DRAWPILE, "replace with a card or discard it P");
+		StageMessage.put(Stage.STEALREPLACE, "replace with one of your own P");
+		StageMessage.put(Stage.STEALPICK, "pick a card you wish to steal P");
+		StageMessage.put(Stage.REPLACE, "replace with one of your cards P");
+		StageMessage.put(Stage.FLIPCARD, "pick a card to flip P");
 
 
 		this.createScreen();
 		this.pile();
 		this.listPlayers = this.drawPlayerButtons(nbPlayers);
 		this.game = new GameManager(nbPlayers);
-		this.pilePanels.getComponent(1);
+
+		tools.setImage(pilePanels.getComponent(1), game.showTopDiscardPile());
 	}
 
 	class CardListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			JButton card = (JButton) e.getSource();
-			int cardIndex = listPlayers.get(indexPlayerPlaying).getComponentZOrder(card);
+			JButton buttonPressed = (JButton) e.getSource();
+			int cardIndex = listPlayers.get(indexPlayerPlaying).getComponentZOrder(buttonPressed);
+			int[] cardCoord = tools.convert(cardIndex);
 
-			System.out.println(cardIndex);
 			switch (currentStage) {
-				case PILEPICKED:
-					int[] index = ConvertCoord.convert(cardIndex);
-					game.replaceCard(index[0], index[1], cardInUse);
+				case REPLACE, STEALREPLACE, DRAWPILE://all require to replace card
+					int cardVal = game.replaceCard(cardCoord[0], cardCoord[1], cardInUse);
+					tools.setImage(buttonPressed, cardInUse.getValue());
+					tools.setImage(pilePanels.getComponent(1), cardVal);
+
+					if (currentStage == Stage.STEALPICK){
+						currentStage = Stage.STEALPICK;
+					}else{
+						currentStage = Stage.CHECKWIN;
+					}
 					break;
-				case REPLACE:
-					break;
-				case STEAL:
+				case FLIPCARD: // last action in a turn
+					tools.setImage(listPlayers.get(indexPlayerPlaying).getComponent(cardIndex), game.FlipCard(cardCoord[0], cardCoord[1]));
+					currentStage = Stage.CHECKWIN;
+					tools.setEnabled(listPlayers.get(indexPlayerPlaying), false);
+					tools.setEnabled(pilePanels, true);
 					break;
 				case STEALPICK:
 					break;
@@ -89,6 +101,7 @@ class GameGUI extends JFrame
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			JButton pile = (JButton) e.getSource();
+			pile.setIcon(null);
 
 			int pileIndex = pilePanels.getComponentZOrder(pile);
 			// drawPile -> 0
@@ -96,24 +109,26 @@ class GameGUI extends JFrame
 
 			switch (currentStage) {
 				case PICKPILE:
+					// pick card from the chosen pile
 					cardInUse = game.pickCard(pileIndex);
-					currentStage = Stage.PILEPICKED;
-					if (pileIndex == 0){// if draw then disable draw because can still discard
+					System.out.println(cardInUse.getValue()+" from pile"+pileIndex);
+
+					if (pileIndex == 0){// Draw => FlipCard or Replace or Steal
 						pile.setEnabled(false);
-						JPanelExtensions.setEnabled(listPlayers.get(indexPlayerPlaying), true);
-	
-					}else{ // if discard then disable all
-						;
-						// JPanelExtensions.setEnabled(pilePanels, false);
-						JPanelExtensions.setEnabled(listPlayers.get(indexPlayerPlaying), false);
-						indexPlayerPlaying = (indexPlayerPlaying+1)%listPlayers.size();
-						JPanelExtensions.setEnabled(listPlayers.get(indexPlayerPlaying), true);
+						currentStage = Stage.DRAWPILE;
+					}else{ //discard => REPLACE (deactivate pile)
+						tools.setEnabled(pilePanels, false);
+						currentStage = Stage.REPLACE;
 					}
+
+					// both might replace so activate game matrix
+					tools.setEnabled(listPlayers.get(indexPlayerPlaying), true);
 					break;
 
-				case PILEPICKED:
+				case DRAWPILE: // equivelent to discarding a card
 					assert pileIndex == 1;
 					game.discardCard(cardInUse);
+					tools.setImage(pile, cardInUse.getValue());
 					currentStage = Stage.FLIPCARD;
 					break;
 				default:
@@ -222,7 +237,7 @@ class GameGUI extends JFrame
 			}
 
 			// deactivate all cards for 1st turn
-			JPanelExtensions.setEnabled(playerPanels.get(playerN), false);
+			tools.setEnabled(playerPanels.get(playerN), false);
 		}
 
 		return playerPanels;

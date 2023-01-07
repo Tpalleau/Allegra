@@ -33,7 +33,7 @@ class Menu extends JFrame
 		joueur2.setBounds(68, 101, 89, 23);
 		getContentPane().add(joueur2);
 		joueur2.addActionListener(new CreateGame(2));
-
+		
 		//3 players
 		JButton joueur3 = new JButton("3 joueurs");
 		joueur3.setBounds(68, 160, 89, 23);

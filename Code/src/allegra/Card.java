@@ -7,9 +7,10 @@ public class Card {
 	/**
 	 * @brief This method allows us to flip the card
 	 */
-	public void flipCard()
+	public int flipCard()
 	{
 		this.visible = true;
+		return this.getValue();
 	}
 	
 	/**

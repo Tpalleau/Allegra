@@ -33,6 +33,10 @@ public class PlayerMatrix {
 					dealedCards.subList(i*3, i*3+3)));//3 cards
 		}
 	}
+
+	protected int flipCard(int x, int y){
+		return matrix.get(x).get(y).flipCard();
+	}
 	
 	protected Card replaceCard(int x, int y, Card card)
 	{

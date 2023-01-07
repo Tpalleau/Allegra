@@ -62,7 +62,7 @@ public class GameManager {
 		return playerPlaying.flipCard(x, y);
 	}
 
-	public int getNeighbor(){
+	public int getNeighborIndex(){
 		return (indexPlayerPlaying+1)%listPlayers.size();
 	}
 	

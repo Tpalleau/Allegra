@@ -86,7 +86,7 @@ class GameGUI extends JFrame
 
 			// if select shared column
 			if (cardIndex == -1){
-				cardIndex = listPlayers.get(game.getNeighbor()).getComponentZOrder(buttonPressed);
+				cardIndex = listPlayers.get(game.getNeighborIndex()).getComponentZOrder(buttonPressed);
 				cardCoord[0] = 4;
 				cardCoord[1] = cardIndex/4;
 			}else{
@@ -95,7 +95,6 @@ class GameGUI extends JFrame
 
 			switch (currentStage) {
 				case REPLACE, STEALREPLACE, DRAWPILE://all require to replace card
-					System.out.println(cardCoord[0] + "," + cardCoord[1]);
 					int cardVal = game.replaceCard(cardCoord[0], cardCoord[1], cardInUse);
 					tools.setImage(buttonPressed, cardInUse.getValue());
 					tools.setImage(pilePanel.getComponent(1), cardVal);
@@ -109,14 +108,21 @@ class GameGUI extends JFrame
 					}
 					break;
 				case FLIPCARD: // last action in a turn
-					tools.setImage(listPlayers.get(indexPlayerPlaying).getComponent(cardIndex), game.FlipCard(cardCoord[0], cardCoord[1]));
 					currentStage = Stage.CHECKWIN;
-					tools.setPartialDisable(listPlayers.get(indexPlayerPlaying));
-					tools.setEnabled(pilePanel, true);
+					tools.setImage(buttonPressed, game.FlipCard(cardCoord[0], cardCoord[1]));
+					tools.setEnabled(listPlayers.get(indexPlayerPlaying), false);
+					tools.setEnabled(listPlayers.get(game.getNeighborIndex()), false);
+					tools.setEnabled(pilePanel, false);
+					endButton.setEnabled(true);
+					endButton.setText("End turn");
 					break;
 				case STEALPICK:
 					break;
+				default:
+					System.out.println(currentStage + ":current stage");
 			}	
+			System.out.println(currentStage + ":current stage");
+
 		}
 	}
 
@@ -142,7 +148,7 @@ class GameGUI extends JFrame
 						currentStage = Stage.STEAL;
 					}else{ //discard => REPLACE (deactivate pile)
 						tools.setEnabled(pilePanel, false);
-						tools.setPartialDisable(listPlayers.get(game.getNeighbor()));
+						tools.setPartialDisable(listPlayers.get(game.getNeighborIndex()));
 						currentStage = Stage.REPLACE;
 					}
 
@@ -154,11 +160,15 @@ class GameGUI extends JFrame
 					assert pileIndex == 1;
 					game.discardCard(cardInUse);
 					tools.setImage(pile, cardInUse.getValue());
+					tools.setEnabled(pilePanel, false);
 					currentStage = Stage.FLIPCARD;
 					break;
+					
 				default:
+					System.out.println(currentStage + ":current stage");
 					break;
 			}
+			System.out.println(currentStage + ":current stage");
 		}
 	}
 
@@ -174,13 +184,23 @@ class GameGUI extends JFrame
 					// get index of next player who hasn't played last turn
 					tools.setEnabled(listPlayers.get(indexPlayerPlaying), false);
 					indexPlayerPlaying = game.nextPlayer();
-					tools.setEnabled(listPlayers.get(indexPlayerPlaying), true);
 					tools.setEnabled(pilePanel, true);
+					break;
+				
+				case STEAL:
+					currentStage = Stage.DRAWPILE;
+					tools.setEnabled(listPlayers.get(indexPlayerPlaying), true);
+					tools.setPartialDisable(listPlayers.get(game.getNeighborIndex()));
+					pilePanel.getComponent(1).setEnabled(true);
+
 					break;
 			
 				default:
+					System.out.println(currentStage + ":current stage");
 					break;
 			}
+			System.out.println(currentStage + ":current stage");
+
 			// always disabled after clicking end
 			endButton.setEnabled(false);
 		}

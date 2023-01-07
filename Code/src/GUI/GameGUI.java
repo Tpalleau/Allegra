@@ -49,7 +49,7 @@ class GameGUI extends JFrame
 	private int indexPlayerPlaying = 0;
 
 	private List<JPanel> listPlayers;
-	private List<JPanel> listVol;
+	private JPanel panelVol;
 	private JPanel pilePanel;
 	private JButton endButton;
 	private JLabel narrator;
@@ -304,9 +304,11 @@ class GameGUI extends JFrame
 		final int HEIGHT_UI = CARD_SIZE;
 		final int HGAP = WIDTH_UI + CARD_GAP*2 + CARD_SIZE*2 + PLAYER_GAP;
 		final int VGAP = HEIGHT_UI + CARD_SIZE + CARD_GAP;
+
 		int xUI = CARD_GAP;
 		int yUI = CARD_GAP*4 + CARD_SIZE*3;
 		for (int playerN = 0; playerN < nbPlayers; playerN++) {
+
 			JPanel UIpanel = new JPanel(new GridLayout(1, 2, 40, 0));
 			JLabel name = new JLabel("player"+(playerN+1));
 			JLabel pion = new JLabel(new ImageIcon("ressources\\pion.png"));

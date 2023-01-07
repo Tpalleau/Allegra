@@ -23,18 +23,7 @@ import java.util.TreeMap;
 
 public class EndingMenu extends JFrame {
 	
-	public EndingMenu() {
-		
-		HashMap<Integer, Integer> playerMap = new HashMap<Integer, Integer>();
-		
-		playerMap.put(0, 4);
-		playerMap.put(1, 34);
-		playerMap.put(2, 12);
-		playerMap.put(3, 98);
-		playerMap.put(4, 1);
-
-
-
+	public EndingMenu(HashMap<Integer, Integer> playerMap) {
 		
 		int nbPlayers = playerMap.size();
 		// set default screen settings
@@ -95,8 +84,5 @@ public class EndingMenu extends JFrame {
 		}
 			
 	}
-	public static void main(String[] args) {
-		EndingMenu menu = new EndingMenu();
-	}
-	
+
 }

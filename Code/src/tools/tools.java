@@ -17,10 +17,8 @@ public class tools {
 
     public static int[] convert(int i){
         int x, y; 
-        y = (i%4)-1;
-        y = (y == -1) ? 4 : y;
-        i -= y;
-        x = i /4;
+        y = i/4;
+        x = i - (y*4);
         return new int[] {x, y};
     }
 

@@ -124,6 +124,7 @@ class GameGUI extends JFrame
 						currentStage = Stage.CHECKWIN;
 						endButton.setText("End turn");
 						endButton.setEnabled(true);
+						tools.setEnabled(pilePanel, false);
 					}
 					break;
 				case FLIPCARD: // last action in a turn
@@ -202,7 +203,7 @@ class GameGUI extends JFrame
 					currentStage = Stage.PICKPILE;
 					// get index of next player who hasn't played last turn
 					tools.setEnabled(listPlayers.get(indexPlayerPlaying), false);
-					tools.setEnabled(listPlayers.get(game.nextPlayer()), false);
+					tools.setEnabled(listPlayers.get(game.getNeighborIndex()), false);
 					indexPlayerPlaying = game.nextPlayer();
 					tools.setEnabled(pilePanel, true);
 					break;

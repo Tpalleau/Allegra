@@ -18,29 +18,37 @@ public class GameManager {
 	public GameManager(int numPlayers)
 	{
 		List<Card> dealtCards = drawPile.dealCards(numPlayers);
+		int columns = dealtCards.size()/3;
+		// allow references in player matrixes
+		List<List<Card>> columnsList = new ArrayList<>();
+
+		for (int i = 0; i < columns; i++) {
+			columnsList.add(new ArrayList<>(dealtCards.subList(i*3, i*3+3)));
+		}
+		for (int playerN = 0; playerN < numPlayers - 1; playerN++) {
+			listPlayers.add(new PlayerMatrix(new ArrayList<>(columnsList.subList(playerN*4, playerN*4+5))));
+		}
+
+		// create last list composed of last 4 columns + 1 column
+		List<List<Card>> lastMatrix = new ArrayList<>(columnsList.subList((numPlayers-1)*4, numPlayers*4));
+		lastMatrix.add(columnsList.get(0));
+		listPlayers.add(new PlayerMatrix(lastMatrix));
+
 
 		//deal card to Discard
 		this.discardPile.discardCard(dealtCards.remove(0));
 
-		for (int player = 0; player < numPlayers; player++) {
-			// last player has list composed of last 12 + first 3 cards (shared columns)
-			if (player == numPlayers-1){
-
-				List<Card> matrixList = dealtCards.subList(player*12, player*12+12);
-				matrixList.addAll(dealtCards.subList(0, 3));
-				this.listPlayers.add(new PlayerMatrix(matrixList));
-			}
-			else{
-				this.listPlayers.add(new PlayerMatrix(dealtCards.subList(player*12, player*12+15)));
-			}
-		}
 		
 		this.playerPlaying = this.listPlayers.get(indexPlayerPlaying);
 	}
 
 	// TEMP method for debug
 	public void showAllMatrix(){
-		this.listPlayers.forEach(PlayerMatrix::showMatrix);
+
+		for (int i = 0; i < listPlayers.size(); i++) {
+			System.out.println("matrix :" + i);
+			listPlayers.get(i).showMatrix();
+		}
 	}
 	public void showMatrix(){
 		playerPlaying.showMatrix();
@@ -135,13 +143,14 @@ public class GameManager {
 		return true;
 	}
 	public static void main(String[] args) {
-		GameManager game = new GameManager(2);
-		game.showMatrix();
-		for (int i = 0; i < 3; i++) {
-			game.replaceCard(i, 0, new Card(1));
-			
-		}
-		game.showMatrix();
-		System.out.print((game.checkAlligned() != null));
+		GameManager game = new GameManager(3);
+		game.showAllMatrix();
+		game.nextPlayer();
+		game.nextPlayer();
+		game.nextPlayer();
+		game.replaceCard(0, 0, new Card(-1));
+		game.showAllMatrix();
+
+
 	}
 }

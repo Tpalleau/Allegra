@@ -83,7 +83,6 @@ class GameGUI extends JFrame
 			JButton buttonPressed = (JButton) e.getSource();
 			int cardIndex = listPlayers.get(indexPlayerPlaying).getComponentZOrder(buttonPressed);
 			int[] cardCoord = new int[2];
-
 			// if select shared column
 			if (cardIndex == -1){
 				cardIndex = listPlayers.get(game.getNeighborIndex()).getComponentZOrder(buttonPressed);
@@ -96,7 +95,10 @@ class GameGUI extends JFrame
 			switch (currentStage) {
 				case REPLACE, STEALREPLACE, DRAWPILE://all require to replace card
 					// get value of card replaced to draw it on discard
+					System.out.println(cardIndex + " card index");
+
 					int cardVal = game.replaceCard(cardCoord[0], cardCoord[1], cardInUse);
+
 					tools.setImage(buttonPressed, cardInUse.getValue());
 					tools.setImage(pilePanel.getComponent(1), cardVal);
 					cardInUse = null;

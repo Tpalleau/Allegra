@@ -10,7 +10,8 @@ public class PlayerMatrix {
 
 	//temporary method for DEBUG keep till end of project
 	public void showMatrix(){
-		System.out.println("matrix size:" + this.matrix.size());
+		System.out.println("matrix size :" + this.matrix.size());
+
 		for (int i = 0; i < this.matrix.size(); i++) {
 			System.out.println("	matrix subsize:" + this.matrix.get(i).size());
 			System.out.print("    ");
@@ -25,13 +26,11 @@ public class PlayerMatrix {
 		}
 	}
 
-	public PlayerMatrix(List<Card> dealedCards){
-		// add list of 3 cards for each column (5 columns)
-		for (int i = 0; i < 5; i++) {
-			this.matrix.add(
-				new ArrayList<>(//list of cards
-					dealedCards.subList(i*3, i*3+3)));//3 cards
-		}
+	public PlayerMatrix(List<List<Card>> dealedCards){
+		// add each column to list
+		for (List<Card> list : dealedCards) {
+			this.matrix.add(list); //list of 3 cards
+		}	
 	}
 
 	/**
@@ -51,6 +50,7 @@ public class PlayerMatrix {
 	protected Card replaceCard(int x, int y, Card card)
 	{
 		// returns value that was swapped
+		this.showMatrix();
 		checkAllVisible();
 		card.flipCard();
 		return this.matrix.get(x).set(y, card);
@@ -171,8 +171,11 @@ public class PlayerMatrix {
 	}
 	
 	protected boolean checkAllVisible(){
-		for (int x=0; x<3; x++)
-			for (int y=0; y<4; y++)
+		System.out.println(matrix.size());
+		for (int x=0; x<4; x++){
+			System.out.println(matrix.get(x).size());
+
+			for (int y=0; y<3; y++){
 
 				//check if coord is not empty then check if visible
 				if (this.matrix.get(x).get(y) != null && !this.matrix.get(x).get(y).getVisible())
@@ -180,6 +183,8 @@ public class PlayerMatrix {
 					lastTurnPLayed = false;
 					return false;
 				}
+			}
+		}
 		lastTurnPLayed = true;
 		return true;
 	}

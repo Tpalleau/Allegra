@@ -46,6 +46,10 @@ public class GameManager {
 		playerPlaying.showMatrix();
 	}
 
+	public int[][] checkAlligned(){
+		return playerPlaying.removeAligned();
+	}
+
 	/**
 	 * changes internal playerPlaying to the next player who has not played last turn
 	 * @return index of next player
@@ -129,5 +133,15 @@ public class GameManager {
 			}
 		}
 		return true;
+	}
+	public static void main(String[] args) {
+		GameManager game = new GameManager(2);
+		game.showMatrix();
+		for (int i = 0; i < 3; i++) {
+			game.replaceCard(i, 0, new Card(1));
+			
+		}
+		game.showMatrix();
+		System.out.print((game.checkAlligned() != null));
 	}
 }

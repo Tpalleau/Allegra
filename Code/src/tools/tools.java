@@ -11,8 +11,14 @@ public class tools {
         b.setIcon(new ImageIcon("ressources\\"+value+".jpg"));
     }
 
-    public static int convert(int x, int y){
-        return (x+1) + y*4;
+    public static int[] convert(int x, int y){
+        // second value corresponds to current player or neighbor
+        // 1: current player, 2: neighbor
+        if (x < 4) {
+            return new int[] {x + y*4, 1};
+        }else{
+            return new int[] {x*y, 2};
+        }
     }
 
     public static int[] convert(int i){

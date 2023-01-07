@@ -52,6 +52,7 @@ public class PlayerMatrix {
 	{
 		// returns value that was swapped
 		checkAllVisible();
+		card.flipCard();
 		return this.matrix.get(x).set(y, card);
 	}
 	
@@ -71,6 +72,7 @@ public class PlayerMatrix {
 		int firstCard = this.matrix.get(x).get(0).getValue();
 		for (Card card : this.matrix.get(x)) {
 			if (!card.getVisible() || card.getValue() != firstCard){
+				
 				return false;
 			}
 		}
@@ -126,8 +128,9 @@ public class PlayerMatrix {
 	 * remove alligned cards if any found, first vertical then horizontal (arbitrary choice)
 	 *@param Card[] cards to be sent to discard
 	 */
-	protected List<Card> removeAligned()
+	protected int[][] removeAligned()
 	{
+		int[][] coordsRemove = new int[3][2];
 		// vertical removal
 		for (int x = 0; x < 5; x++) {
 			// returns bool
@@ -137,8 +140,9 @@ public class PlayerMatrix {
 				// remove cards from the matrix
 				for (int y = 0; y < 3; y++) {
 					matrix.get(x).set(y, null);
+					coordsRemove[y] = new int[] {x, y};
 				}
-				return cardsToDiscard;
+				return coordsRemove;
 			}
 			// nothing found so check for next column
 		}
@@ -151,13 +155,14 @@ public class PlayerMatrix {
 
 			// check if cards to discard are found
 			if (coordCardsToDiscard != null) {
-				for (int x : coordCardsToDiscard) {
+				for (int i = 0; i < coordCardsToDiscard.size(); i++) {
+					int x = coordCardsToDiscard.get(i);
 					cardsToDiscard.add(matrix.get(x).get(y));
-
-					// remove card from matrix
 					this.matrix.get(x).set(y, null);
+
+					coordsRemove[i] = new int[] {x, y};
 				}
-				return cardsToDiscard;
+				return coordsRemove;
 			}
 			// nothing found so check for next line
 		}

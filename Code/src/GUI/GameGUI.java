@@ -95,12 +95,31 @@ class GameGUI extends JFrame
 
 			switch (currentStage) {
 				case REPLACE, STEALREPLACE, DRAWPILE://all require to replace card
+					// get value of card replaced to draw it on discard
 					int cardVal = game.replaceCard(cardCoord[0], cardCoord[1], cardInUse);
 					tools.setImage(buttonPressed, cardInUse.getValue());
 					tools.setImage(pilePanel.getComponent(1), cardVal);
+					cardInUse = null;
 
+					// check if cards alligned
+					int[][] coordCardsToDiscard = game.checkAlligned();
+					if (coordCardsToDiscard != null){
+						// go through the 3 coords to remove the cards
+						for (int i = 0; i < coordCardsToDiscard.length; i++) {
+
+							// convert to JButton coord
+							int [] coords = tools.convert(coordCardsToDiscard[i][0], coordCardsToDiscard[i][1]);
+							// check if its current player or neighbor table
+							if (coords[1] == 1) {
+								listPlayers.get(indexPlayerPlaying).getComponent(coords[0]).setVisible(false);
+							}else{
+								listPlayers.get(game.getNeighborIndex()).getComponent(coords[0]).setVisible(false);
+							}
+						}
+					
+					}
 					if (currentStage == Stage.STEALPICK){
-						currentStage = Stage.STEALPICK;
+						currentStage = Stage.STEALREPLACE;
 					}else{
 						currentStage = Stage.CHECKWIN;
 						endButton.setText("End turn");
@@ -178,11 +197,12 @@ class GameGUI extends JFrame
 			switch (currentStage) {
 				case CHECKWIN:
 					if (game.checkEndGame()){
-						// end of game
+						System.out.println("Game ended");
 					}
 					currentStage = Stage.PICKPILE;
 					// get index of next player who hasn't played last turn
 					tools.setEnabled(listPlayers.get(indexPlayerPlaying), false);
+					tools.setEnabled(listPlayers.get(game.nextPlayer()), false);
 					indexPlayerPlaying = game.nextPlayer();
 					tools.setEnabled(pilePanel, true);
 					break;

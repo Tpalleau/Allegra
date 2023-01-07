@@ -3,10 +3,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameManager {
-	protected List<PlayerMatrix> listPlayers = new ArrayList<>();
-	protected DrawPile drawPile = new DrawPile();
-	protected DiscardPile discardPile = new DiscardPile();
-	protected PlayerMatrix playerPlaying;
+	private List<PlayerMatrix> listPlayers = new ArrayList<>();
+	private DrawPile drawPile = new DrawPile();
+	private DiscardPile discardPile = new DiscardPile();
+	private PlayerMatrix playerPlaying;
+	private int indexPlayerPlaying = 0;
+
 
 
 	/**
@@ -33,19 +35,35 @@ public class GameManager {
 			}
 		}
 		
-		this.playerPlaying = this.listPlayers.get(0);
+		this.playerPlaying = this.listPlayers.get(indexPlayerPlaying);
 	}
 
 	// TEMP method for debug
 	public void showAllMatrix(){
-		this.listPlayers.forEach(player -> player.showMatrix());
+		this.listPlayers.forEach(PlayerMatrix::showMatrix);
 	}
 	public void showMatrix(){
 		playerPlaying.showMatrix();
 	}
 
+	/**
+	 * changes internal playerPlaying to the next player who has not played last turn
+	 * @return index of next player
+	 */
+	public int nextPlayer(){
+		do {
+			indexPlayerPlaying = (indexPlayerPlaying+1)%listPlayers.size();
+			playerPlaying = listPlayers.get(indexPlayerPlaying);
+		} while (playerPlaying.lastTurnPLayed);
+		return indexPlayerPlaying;
+	}
+
 	public int FlipCard(int x, int y){
 		return playerPlaying.flipCard(x, y);
+	}
+
+	public int getNeighbor(){
+		return (indexPlayerPlaying+1)%listPlayers.size();
 	}
 	
 	/**
@@ -95,13 +113,18 @@ public class GameManager {
 		player.replaceCard(stealCoord[0], stealCoord[1], cardHolder);
 	}
 
+	public boolean checkLastTurn(){
+		return playerPlaying.lastTurnPLayed;
+
+	}
+
 	/**
 	 * iterate through all PlayerMatrix to check if all players have played last turn
 	 * @return bool
 	 */
 	public boolean checkEndGame(){
 		for (PlayerMatrix player : listPlayers) {
-			if (!player.checkAllVisible()) {
+			if (!player.lastTurnPLayed) {
 				return false;
 			}
 		}

@@ -23,10 +23,20 @@ public class tools {
     }
 
     public static void setEnabled(JPanel panel, boolean enabled) {
-        // TODO Auto-generated method stub
         Component[] components = panel.getComponents();
         for (Component comp : components) {
             comp.setEnabled(enabled);
+        }
+    }
+
+    public static void setPartialDisable(JPanel panel) {
+        Component[] components = panel.getComponents();
+        for (int i = 0; i < components.length; i++) {
+            if (i %4 != 0){
+                components[i].setEnabled(false);
+            }else{
+                components[i].setEnabled(true);
+            }
         }
     }
 

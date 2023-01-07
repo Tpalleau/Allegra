@@ -6,6 +6,7 @@ import allegra.GameManager;
 import tools.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -16,21 +17,29 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 
 import java.awt.GridLayout;
+import java.awt.Rectangle;
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 class GameGUI extends JFrame
 {
+	final int CARD_GAP = 10;
+	final int CARD_SIZE = 64;
+	final int PLAYER_GAP = 30;
+	private int[] WindowSize = {CARD_SIZE*12 + CARD_GAP*12 + PLAYER_GAP*2 ,
+		CARD_SIZE*9 + CARD_GAP*8 + PLAYER_GAP*2};
+
 	private Container container;
 	private GameManager game;
-	private List<JPanel> listPlayers;
 	private enum Stage {
 		CHECKWIN,
 		PICKPILE,
 		DRAWPILE,
 		REPLACE,
 		FLIPCARD,
+		STEAL,
 		STEALREPLACE,
 		STEALPICK
 	}
@@ -39,9 +48,11 @@ class GameGUI extends JFrame
 	private Stage currentStage = Stage.PICKPILE;
 	private int indexPlayerPlaying = 0;
 
+	private List<JPanel> listPlayers;
+	private List<JPanel> listVol;
+	private JPanel pilePanel;
+	private JButton endButton;
 	private JLabel narrator;
-	private JButton endStage;
-	private JPanel pilePanels;
 
 	private Card cardInUse;
 
@@ -61,8 +72,9 @@ class GameGUI extends JFrame
 		this.pile();
 		this.listPlayers = this.drawPlayerButtons(nbPlayers);
 		this.game = new GameManager(nbPlayers);
+		drawEnd();
 
-		tools.setImage(pilePanels.getComponent(1), game.showTopDiscardPile());
+		tools.setImage(pilePanel.getComponent(1), game.showTopDiscardPile());
 	}
 
 	class CardListener implements ActionListener{
@@ -70,25 +82,37 @@ class GameGUI extends JFrame
 		public void actionPerformed(ActionEvent e) {
 			JButton buttonPressed = (JButton) e.getSource();
 			int cardIndex = listPlayers.get(indexPlayerPlaying).getComponentZOrder(buttonPressed);
-			int[] cardCoord = tools.convert(cardIndex);
+			int[] cardCoord = new int[2];
+
+			// if select shared column
+			if (cardIndex == -1){
+				cardIndex = listPlayers.get(game.getNeighbor()).getComponentZOrder(buttonPressed);
+				cardCoord[0] = 4;
+				cardCoord[1] = cardIndex/4;
+			}else{
+				cardCoord = tools.convert(cardIndex);
+			}
 
 			switch (currentStage) {
 				case REPLACE, STEALREPLACE, DRAWPILE://all require to replace card
+					System.out.println(cardCoord[0] + "," + cardCoord[1]);
 					int cardVal = game.replaceCard(cardCoord[0], cardCoord[1], cardInUse);
 					tools.setImage(buttonPressed, cardInUse.getValue());
-					tools.setImage(pilePanels.getComponent(1), cardVal);
+					tools.setImage(pilePanel.getComponent(1), cardVal);
 
 					if (currentStage == Stage.STEALPICK){
 						currentStage = Stage.STEALPICK;
 					}else{
 						currentStage = Stage.CHECKWIN;
+						endButton.setText("End turn");
+						endButton.setEnabled(true);
 					}
 					break;
 				case FLIPCARD: // last action in a turn
 					tools.setImage(listPlayers.get(indexPlayerPlaying).getComponent(cardIndex), game.FlipCard(cardCoord[0], cardCoord[1]));
 					currentStage = Stage.CHECKWIN;
-					tools.setEnabled(listPlayers.get(indexPlayerPlaying), false);
-					tools.setEnabled(pilePanels, true);
+					tools.setPartialDisable(listPlayers.get(indexPlayerPlaying));
+					tools.setEnabled(pilePanel, true);
 					break;
 				case STEALPICK:
 					break;
@@ -102,7 +126,7 @@ class GameGUI extends JFrame
 			JButton pile = (JButton) e.getSource();
 			pile.setIcon(null);
 
-			int pileIndex = pilePanels.getComponentZOrder(pile);
+			int pileIndex = pilePanel.getComponentZOrder(pile);
 			// drawPile -> 0
 			// discardPile -> 1
 
@@ -110,13 +134,15 @@ class GameGUI extends JFrame
 				case PICKPILE:
 					// pick card from the chosen pile
 					cardInUse = game.pickCard(pileIndex);
-					System.out.println(cardInUse.getValue()+" from pile"+pileIndex);
 
 					if (pileIndex == 0){// Draw => FlipCard or Replace or Steal
-						pile.setEnabled(false);
-						currentStage = Stage.DRAWPILE;
+						tools.setEnabled(pilePanel, false);
+						endButton.setEnabled(true);
+						endButton.setText("End steal");
+						currentStage = Stage.STEAL;
 					}else{ //discard => REPLACE (deactivate pile)
-						tools.setEnabled(pilePanels, false);
+						tools.setEnabled(pilePanel, false);
+						tools.setPartialDisable(listPlayers.get(game.getNeighbor()));
 						currentStage = Stage.REPLACE;
 					}
 
@@ -136,12 +162,36 @@ class GameGUI extends JFrame
 		}
 	}
 
+	class EndListener implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			switch (currentStage) {
+				case CHECKWIN:
+					if (game.checkEndGame()){
+						// end of game
+					}
+					currentStage = Stage.PICKPILE;
+					// get index of next player who hasn't played last turn
+					tools.setEnabled(listPlayers.get(indexPlayerPlaying), false);
+					indexPlayerPlaying = game.nextPlayer();
+					tools.setEnabled(listPlayers.get(indexPlayerPlaying), true);
+					tools.setEnabled(pilePanel, true);
+					break;
+			
+				default:
+					break;
+			}
+			// always disabled after clicking end
+			endButton.setEnabled(false);
+		}
+	}
+
 	// GUI
 
 	private void createScreen(){
 		getContentPane().setLayout(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setSize(1055,700);
+		this.setSize(WindowSize[0], WindowSize[1]);
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		this.setVisible(true);
@@ -149,8 +199,10 @@ class GameGUI extends JFrame
 	}
 
 	private void pile(){
-		pilePanels = new JPanel(new GridLayout(1, 2,20, 0));
-		pilePanels.setBounds(451, 296, 64*2+20, 64);
+		int xPile = CARD_GAP*5 + CARD_SIZE*5 + PLAYER_GAP;
+		int yPile = CARD_GAP*4 + CARD_SIZE*4;
+		pilePanel = new JPanel(new GridLayout(1, 2,CARD_GAP, 0));
+		pilePanel.setBounds(xPile, yPile, CARD_SIZE*2 + CARD_GAP, CARD_SIZE);
 
 
 		JButton drawPile = new JButton(new ImageIcon("ressources\\dos.jpg"));
@@ -160,50 +212,35 @@ class GameGUI extends JFrame
 		discardPile.addActionListener(new PileListener());
 
 
-		pilePanels.add(drawPile);
-		pilePanels.add(discardPile);
-		container.add(pilePanels);
+		pilePanel.add(drawPile);
+		pilePanel.add(discardPile);
+		container.add(pilePanel);
 	}
 
 	private List<JPanel> drawPlayerButtons(int nbPlayers){
 		List<JPanel> playerPanels = new ArrayList<>();
 		// coord of panels
-		int xPlayerPanel;
-		int yPlayerPanel;
-
-		final int CARD_GAP = 10;
-		final int CARD_SIZE = 64;
+		int xPlayerPanel = CARD_GAP;
+		int yPlayerPanel = CARD_GAP;
 		
 		// width and height of the panels
 		final int WIDTH_PLAYER = CARD_SIZE*4 + CARD_GAP*3;
 		final int HEIGHT_PLAYER = CARD_SIZE*3 + CARD_GAP*2;
 
-		// gap between each JPANEL
-		final int PLAYER_GAP = 58;
-
 		//create panel for each player
 		for (int playerN = 0; playerN < nbPlayers; playerN++) {
-			// calculate panel coord
-
-			// draw right to left
-			if (playerN < 3){
-				//start x coord: X + distance between each right side panel * n player
-
-				xPlayerPanel = 39 + (WIDTH_PLAYER + PLAYER_GAP)*((playerN)%3);
-			}else{
-				// draw left to right
-				xPlayerPanel = 39 + (WIDTH_PLAYER + PLAYER_GAP)*2 - (WIDTH_PLAYER + PLAYER_GAP)*(playerN - 3);
-			}
-
-			if (playerN < 3) {
-				yPlayerPanel = 11;
-			} else {
-				yPlayerPanel = 11 + HEIGHT_PLAYER*2;
-			}
-
 			// create card panel
 			playerPanels.add(new JPanel(new GridLayout(3, 4, CARD_GAP, CARD_GAP)));
-			playerPanels.get(playerN).setBounds(xPlayerPanel, yPlayerPanel, WIDTH_PLAYER, HEIGHT_PLAYER);
+
+			// shift new coords for next player panel
+			yPlayerPanel += (playerN == 3) ? HEIGHT_PLAYER*2 : 0;
+			if (playerN < 3){ // draw right to left
+				playerPanels.get(playerN).setBounds(xPlayerPanel, yPlayerPanel, WIDTH_PLAYER, HEIGHT_PLAYER);
+				xPlayerPanel += (WIDTH_PLAYER + PLAYER_GAP);
+			}else{ // draw left to right
+				xPlayerPanel -= (WIDTH_PLAYER + PLAYER_GAP);
+				playerPanels.get(playerN).setBounds(xPlayerPanel, yPlayerPanel, WIDTH_PLAYER, HEIGHT_PLAYER);
+			}			
 
 			// add cards to player panel
 			for (int cardN = 0; cardN < 12; ++cardN)
@@ -216,34 +253,35 @@ class GameGUI extends JFrame
 
 			// deactivate all cards for 1st turn
 			tools.setEnabled(playerPanels.get(playerN), false);
-			drawUI(nbPlayers);
+			drawVolUI(nbPlayers);
 		}
 
 		return playerPanels;
 	}
-	public void drawUI(int nbPlayers){
-		final int VGAP = 210;
-		final int HGAP = 131;
-		final int WIDTH_UI = 138;
-		final int HEIGHT_UI = 31;
-		int xUI = 47, yUI = 228;
+	public void drawVolUI(int nbPlayers){
+		final int WIDTH_UI = CARD_SIZE * 2 + CARD_GAP;
+		final int HEIGHT_UI = CARD_SIZE;
+		final int HGAP = WIDTH_UI + CARD_GAP*2 + CARD_SIZE*2 + PLAYER_GAP;
+		final int VGAP = HEIGHT_UI + CARD_SIZE + CARD_GAP;
+		int xUI = CARD_GAP;
+		int yUI = CARD_GAP*4 + CARD_SIZE*3;
 		for (int playerN = 0; playerN < nbPlayers; playerN++) {
-			JPanel UIpanel = new JPanel(new GridLayout(1, 4, 40, 0));
+			JPanel UIpanel = new JPanel(new GridLayout(1, 2, 40, 0));
 			JLabel name = new JLabel("player"+(playerN+1));
 			JLabel pion = new JLabel(new ImageIcon("ressources\\pion.png"));
 			
 			// shift when changing from top to bottom
 			xUI += (playerN == 3) ? 138 : 0;
-			yUI = 228 + (HGAP+HEIGHT_UI) * (playerN/3);
+			yUI += (playerN == 3) ? VGAP: 0;
 			if (playerN < 3){ // top grid UI is on right side
 				UIpanel.setBounds(xUI , yUI, WIDTH_UI, HEIGHT_UI);
-				xUI += VGAP + WIDTH_UI;
+				xUI += HGAP;
 
 				UIpanel.add(pion);
 				UIpanel.add(name);
 			}else{ // bottom grid UI is on the left side
 				
-				xUI -= VGAP + WIDTH_UI;
+				xUI -= HGAP;
 				UIpanel.setBounds(xUI , yUI, WIDTH_UI, HEIGHT_UI);
 
 				UIpanel.add(name);
@@ -251,5 +289,15 @@ class GameGUI extends JFrame
 			}
 			container.add(UIpanel);
 		}
+	}
+
+	public void drawEnd(){
+		int xEnd = CARD_GAP*4 + CARD_SIZE*3 + PLAYER_GAP;
+		int yEnd = CARD_GAP*5 + CARD_SIZE * 4;
+		endButton = new JButton("END turn");
+		endButton.setBounds(xEnd, yEnd, CARD_SIZE*2, CARD_SIZE/2);
+		endButton.setEnabled(false);
+		endButton.addActionListener(new EndListener());
+		container.add(endButton);
 	}
 }

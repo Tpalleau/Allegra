@@ -6,7 +6,7 @@ import java.util.List;
 public class PlayerMatrix {
 
 	private List<List<Card>> matrix = new ArrayList<>();
-	private boolean lastTurn;
+	public boolean lastTurnPLayed = false;
 
 	//temporary method for DEBUG keep till end of project
 	public void showMatrix(){
@@ -34,20 +34,25 @@ public class PlayerMatrix {
 		}
 	}
 
+	/**
+	 * returns the value of the card and sets it visible
+	 */
 	protected int flipCard(int x, int y){
 		return matrix.get(x).get(y).flipCard();
 	}
 	
+	/**
+	 * replace card A with B and checkAllVisible -> updates lastTurnPlayed
+	 * @param x
+	 * @param y
+	 * @param card
+	 * @return
+	 */
 	protected Card replaceCard(int x, int y, Card card)
 	{
 		// returns value that was swapped
+		checkAllVisible();
 		return this.matrix.get(x).set(y, card);
-	}
-	
-	protected int seeCard(int x, int y)
-	{
-		this.matrix.get(x).get(y).flipCard();
-		return this.matrix.get(x).get(y).getValue();
 	}
 	
 	/**
@@ -167,8 +172,10 @@ public class PlayerMatrix {
 				//check if coord is not empty then check if visible
 				if (this.matrix.get(x).get(y) != null && !this.matrix.get(x).get(y).getVisible())
 				{
+					lastTurnPLayed = false;
 					return false;
 				}
+		lastTurnPLayed = true;
 		return true;
 	}
 }

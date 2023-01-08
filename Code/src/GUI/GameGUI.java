@@ -95,8 +95,7 @@ class GameGUI extends JFrame
 			switch (currentStage) {
 				case REPLACE, STEALREPLACE, DRAWPILE://all require to replace card
 					// get value of card replaced to draw it on discard
-					System.out.println(cardIndex + " card index");
-
+					tools.setImage(pilePanel.getComponent(0), -2);
 					int cardVal = game.replaceCard(cardCoord[0], cardCoord[1], cardInUse);
 
 					tools.setImage(buttonPressed, cardInUse.getValue());
@@ -108,7 +107,6 @@ class GameGUI extends JFrame
 					if (coordCardsToDiscard != null){
 						// go through the 3 coords to remove the cards
 						for (int i = 0; i < coordCardsToDiscard.length; i++) {
-
 							// convert to JButton coord
 							int [] coords = tools.convert(coordCardsToDiscard[i][0], coordCardsToDiscard[i][1]);
 							// check if its current player or neighbor table
@@ -152,7 +150,6 @@ class GameGUI extends JFrame
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			JButton pile = (JButton) e.getSource();
-			pile.setIcon(null);
 
 			int pileIndex = pilePanel.getComponentZOrder(pile);
 			// drawPile -> 0
@@ -164,22 +161,24 @@ class GameGUI extends JFrame
 					cardInUse = game.pickCard(pileIndex);
 
 					if (pileIndex == 0){// Draw => FlipCard or Replace or Steal
-						tools.setEnabled(pilePanel, false);
+						pilePanel.getComponent(1).setEnabled(false);
 						endButton.setEnabled(true);
 						endButton.setText("End steal");
+						tools.setImage(pile, cardInUse.getValue());
 						currentStage = Stage.STEAL;
 					}else{ //discard => REPLACE (deactivate pile)
 						tools.setEnabled(pilePanel, false);
-						tools.setPartialDisable(listPlayers.get(game.getNeighborIndex()));
 						currentStage = Stage.REPLACE;
 					}
 
-					// both might replace so activate game matrix
+					// allows player to see their cards but cant interact with them
 					tools.setEnabled(listPlayers.get(indexPlayerPlaying), true);
+					tools.setPartialDisable(listPlayers.get(game.getNeighborIndex()));
 					break;
 
 				case DRAWPILE: // equivelent to discarding a card
 					assert pileIndex == 1;
+					tools.setImage(pilePanel.getComponent(0), -2);
 					game.discardCard(cardInUse);
 					tools.setImage(pile, cardInUse.getValue());
 					tools.setEnabled(pilePanel, false);
@@ -199,14 +198,16 @@ class GameGUI extends JFrame
 		public void actionPerformed(ActionEvent e) {
 			switch (currentStage) {
 				case CHECKWIN:
-					if (game.checkEndGame()){
-						System.out.println("Game ended");
-					}
+					game.checkAllVisible();
 					currentStage = Stage.PICKPILE;
+					indexPlayerPlaying = game.nextPlayer();
+					game.checkAllVisible();
+					if (game.checkEndGame()){
+						System.out.println("end of game!!!");
+					}
 					// get index of next player who hasn't played last turn
 					tools.setEnabled(listPlayers.get(indexPlayerPlaying), false);
 					tools.setEnabled(listPlayers.get(game.getNeighborIndex()), false);
-					indexPlayerPlaying = game.nextPlayer();
 					tools.setEnabled(pilePanel, true);
 					break;
 				
@@ -248,7 +249,7 @@ class GameGUI extends JFrame
 		pilePanel.setBounds(xPile, yPile, CARD_SIZE*2 + CARD_GAP, CARD_SIZE);
 
 
-		JButton drawPile = new JButton(new ImageIcon("ressources\\dos.jpg"));
+		JButton drawPile = new JButton(new ImageIcon("ressources\\-2.jpg"));
 		drawPile.addActionListener(new PileListener());
 
 		JButton discardPile = new JButton();
@@ -288,7 +289,7 @@ class GameGUI extends JFrame
 			// add cards to player panel
 			for (int cardN = 0; cardN < 12; ++cardN)
 			{
-				JButton Button = new JButton(new ImageIcon("ressources\\dos.jpg"));
+				JButton Button = new JButton(new ImageIcon("ressources\\-2.jpg"));
 				Button.addActionListener(new CardListener());
 				playerPanels.get(playerN).add(Button);
 				container.add(playerPanels.get(playerN));

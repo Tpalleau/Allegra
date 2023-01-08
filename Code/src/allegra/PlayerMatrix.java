@@ -50,7 +50,6 @@ public class PlayerMatrix {
 	protected Card replaceCard(int x, int y, Card card)
 	{
 		// returns value that was swapped
-		this.showMatrix();
 		checkAllVisible();
 		card.flipCard();
 		return this.matrix.get(x).set(y, card);
@@ -135,7 +134,6 @@ public class PlayerMatrix {
 		for (int x = 0; x < 5; x++) {
 			// returns bool
 			if (this.checkAllignedVertical(x)){
-				List<Card> cardsToDiscard = this.matrix.get(x);
 
 				// remove cards from the matrix
 				for (int y = 0; y < 3; y++) {
@@ -171,9 +169,7 @@ public class PlayerMatrix {
 	}
 	
 	protected boolean checkAllVisible(){
-		System.out.println(matrix.size());
 		for (int x=0; x<4; x++){
-			System.out.println(matrix.get(x).size());
 
 			for (int y=0; y<3; y++){
 

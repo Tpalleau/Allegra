@@ -125,8 +125,13 @@ public class GameManager {
 		player.replaceCard(stealCoord[0], stealCoord[1], cardHolder);
 	}
 
-	public boolean checkLastTurn(){
-		return playerPlaying.lastTurnPLayed;
+	public boolean checkAllVisible(){
+		// check it has not alreay been verified
+		if (playerPlaying.lastTurnPLayed) {
+			return true;
+		}
+		// if not verify it
+		return playerPlaying.checkAllVisible();
 
 	}
 
@@ -141,16 +146,5 @@ public class GameManager {
 			}
 		}
 		return true;
-	}
-	public static void main(String[] args) {
-		GameManager game = new GameManager(3);
-		game.showAllMatrix();
-		game.nextPlayer();
-		game.nextPlayer();
-		game.nextPlayer();
-		game.replaceCard(0, 0, new Card(-1));
-		game.showAllMatrix();
-
-
 	}
 }

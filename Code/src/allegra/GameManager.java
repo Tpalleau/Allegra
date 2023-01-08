@@ -1,6 +1,9 @@
 package allegra;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import allegra.PlayerMatrix;
 
 public class GameManager {
 	private List<PlayerMatrix> listPlayers = new ArrayList<>();
@@ -8,6 +11,7 @@ public class GameManager {
 	private DiscardPile discardPile = new DiscardPile();
 	private PlayerMatrix playerPlaying;
 	private int indexPlayerPlaying = 0;
+	private HashMap<Integer, Integer> playersHashMap;
 
 
 
@@ -17,6 +21,7 @@ public class GameManager {
 	 */
 	public GameManager(int numPlayers)
 	{
+		playersHashMap = createHashMap(numPlayers, playersHashMap);
 		List<Card> dealtCards = drawPile.dealCards(numPlayers);
 		int columns = dealtCards.size()/3;
 		// allow references in player matrixes
@@ -134,6 +139,18 @@ public class GameManager {
 		// if not verify it
 		return playerPlaying.checkAllVisible();
 
+	}
+	
+	public HashMap<Integer, Integer> createHashMap(int nbPlayers, HashMap<Integer, Integer> hashmap){
+		
+		for(int i = 0; i < nbPlayers; i++) {
+			hashmap.put(i, 0);
+		}
+		return hashmap;
+	}
+	
+	public void updateHashMap(PlayerMatrix player, HashMap<Integer, Integer> hashmap) {
+		hashmap.put(indexPlayerPlaying, player.scoreMatrix());
 	}
 
 	/**

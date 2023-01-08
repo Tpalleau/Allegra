@@ -102,10 +102,10 @@ public class GameManager {
 	 * @param x & y
 	 * @param card
 	 */
-	public int replaceCard(int x, int y, Card card, int indexPlayer){
+	public Card replaceCard(int x, int y, Card card, int indexPlayer){
 		Card removedCard = listPlayers.get(indexPlayer).replaceCard(x, y, card);
 		discardCard(removedCard);
-		return removedCard.getValue();
+		return removedCard;
 	}
 
 
@@ -125,10 +125,13 @@ public class GameManager {
 	 * @param player
 	 * @param stealCoord
 	 */
-	public void stealCard(int[] coord,PlayerMatrix player, int[] stealCoord){
-		Card cardHolder = player.replaceCard(stealCoord[0], stealCoord[1], null);
-		cardHolder = playerPlaying.replaceCard(coord[0], coord[1], cardHolder);
-		player.replaceCard(stealCoord[0], stealCoord[1], cardHolder);
+	public Card[] stealCard(int[] coord,int Indexplayer, int[] stealCoord){
+		PlayerMatrix playerStealing = listPlayers.get(Indexplayer);
+		Card cardFrom = playerStealing.replaceCard(stealCoord[0], stealCoord[1], null);
+		Card cardTo = playerPlaying.replaceCard(coord[0], coord[1], cardFrom);
+		playerStealing.replaceCard(stealCoord[0], stealCoord[1], cardTo);
+
+		return new Card[] {cardFrom, cardTo};
 	}
 
 	public boolean checkAllVisible(){

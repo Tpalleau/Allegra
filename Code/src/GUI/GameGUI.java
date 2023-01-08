@@ -43,13 +43,14 @@ class GameGUI extends JFrame
 		STEAL,
 		PICKSTEALER,
 		STEALREPLACE,
-		STEALPICK
+		STEALPICK, PICKSWAP, SWAP
 	}
 	Map<Stage, String> StageMessage = new HashMap();
 
 	private Stage currentStage = Stage.PICKPILE;
 	private int indexPlayerPlaying = 0;
 	private int indexStealPlayer;
+	private int indexCardSteal;
 
 	private List<JPanel> listPlayers;
 	private List<VolListener> listVolListener = new ArrayList<>();
@@ -82,9 +83,12 @@ class GameGUI extends JFrame
 	class CardListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			System.out.println(currentStage + " + CARDS:current stage");
+
 			JButton buttonPressed = (JButton) e.getSource();
 			int cardIndex = listPlayers.get(indexPlayerPlaying).getComponentZOrder(buttonPressed);
 			int[] cardCoord = new int[2];
+
 			// if select shared column
 			if (cardIndex == -1){
 				cardIndex = listPlayers.get(game.getNeighborIndex(indexPlayerPlaying)).getComponentZOrder(buttonPressed);
@@ -97,11 +101,11 @@ class GameGUI extends JFrame
 			switch (currentStage) {
 				case REPLACE, STEALREPLACE, DRAWPILE://all require to replace card
 					int indexPlayerReplacing;
-					if (currentStage == Stage.STEALPICK){
-						currentStage = Stage.STEALREPLACE;
+					if (currentStage == Stage.STEALREPLACE){ // replace as stealing player
+						currentStage = Stage.PICKSWAP;
 						
 						indexPlayerReplacing = indexStealPlayer;
-					}else{
+					}else{ // replace as playing player
 						currentStage = Stage.CHECKWIN;
 
 						indexPlayerReplacing = indexPlayerPlaying;
@@ -109,53 +113,87 @@ class GameGUI extends JFrame
 						endButton.setEnabled(true);
 						tools.setEnabled(pilePanel, false);
 					}
-
-					int cardVal = game.replaceCard(cardCoord[0], cardCoord[1], cardInUse, indexPlayerReplacing);
+					System.out.println(cardInUse.getValue()+"card form pile");
+					// update card pressed with the replaced card image
+					tools.setImage(buttonPressed, cardInUse.getValue());
+					// get the discarded card
+					cardInUse = game.replaceCard(cardCoord[0], cardCoord[1], cardInUse, indexPlayerReplacing);
 
 					// draw card face down on draw pile
 					tools.setImage(pilePanel.getComponent(0), -2);
-					
-					tools.setImage(buttonPressed, cardInUse.getValue());
-					tools.setImage(pilePanel.getComponent(1), cardVal);
-					cardInUse = null;
+					// update discard pile card image
+					tools.setImage(pilePanel.getComponent(1), cardInUse.getValue());
 
-					// check if cards alligned
-					int[][] coordCardsToDiscard = game.checkAlligned(indexPlayerReplacing);
-					if (coordCardsToDiscard != null){
-						// go through the 3 coords to remove the cards
-						for (int i = 0; i < coordCardsToDiscard.length; i++) {
-							// convert to JButton coord
-							int [] coords = tools.convert(coordCardsToDiscard[i][0], coordCardsToDiscard[i][1]);
-							// check if its current player or neighbor table
-							if (coords[1] == 1) {
-								listPlayers.get(indexPlayerReplacing).getComponent(coords[0]).setVisible(false);
-							}else{
-								listPlayers.get(game.getNeighborIndex(indexPlayerReplacing)).getComponent(coords[0]).setVisible(false);
-							}
-						}
-					
-					}
 					break;
-				case FLIPCARD: // last action in a turn
+				case FLIPCARD: // flip a card to show it
 					currentStage = Stage.CHECKWIN;
+					// set image of card fliped
 					tools.setImage(buttonPressed, game.FlipCard(cardCoord[0], cardCoord[1]));
+					// deactivate player matrix
 					tools.setEnabled(listPlayers.get(indexPlayerPlaying), false);
 					tools.setEnabled(listPlayers.get(game.getNeighborIndex(indexPlayerPlaying)), false);
+					// deactivate pile
 					tools.setEnabled(pilePanel, false);
+					// activate end button
 					endButton.setEnabled(true);
 					endButton.setText("End turn");
+					// remove alligned cards
+					removeAlligne(indexPlayerPlaying);
 					break;
-				case STEALPICK:
-					break;
-			}	
-			System.out.println(currentStage + " + CARDS:current stage");
 
+				case PICKSWAP: // player playing picks a card to swap from playerStealing
+					currentStage = Stage.SWAP;
+
+					indexCardSteal = cardIndex;
+					// disable the stealer matrix
+					tools.setEnabled(listPlayers.get(indexStealPlayer), false);
+					tools.setEnabled(listPlayers.get(game.getNeighborIndex(indexStealPlayer)), false);
+
+					// enable the player playing
+					tools.setEnabled(listPlayers.get(indexPlayerPlaying), true);
+					tools.setPartialDisable(listPlayers.get(game.getNeighborIndex(indexPlayerPlaying)),game.getNeighborIndex(indexPlayerPlaying));
+					
+					break;
+				case SWAP: // player playing selects a card to swap and swaps it with swapPicked card
+					currentStage = Stage.CHECKWIN;
+					// replace cards and store the moved cards
+					System.out.println(cardCoord[0]+","+cardCoord[1]+" and "+indexCardSteal+" and "+indexStealPlayer);
+					Card[] cardsMoved = game.stealCard(cardCoord, indexStealPlayer, tools.convert(indexCardSteal));
+					// update the player playing card
+					tools.setImage(buttonPressed, cardsMoved[0].getValue());
+					// update the stealer card
+					tools.setImage(listPlayers.get(indexStealPlayer).getComponent(indexCardSteal), cardsMoved[1].getValue());
+					endButton.setText("End turn");
+
+					break;
+			}
+		}
+
+		public void removeAlligne(int indexPlayerReplacing){
+			// check if cards alligned
+			int[][] coordCardsToDiscard = game.checkAlligned(indexPlayerReplacing);
+			if (coordCardsToDiscard != null){
+				// go through the 3 coords to remove the cards
+				for (int i = 0; i < coordCardsToDiscard.length; i++) {
+					// convert to JButton coord
+					int [] coords = tools.convert(coordCardsToDiscard[i][0], coordCardsToDiscard[i][1]);
+					// check if its current player or neighbor table
+					if (coords[1] == 1) {
+						listPlayers.get(indexPlayerReplacing).getComponent(coords[0]).setVisible(false);
+					}else{
+						listPlayers.get(game.getNeighborIndex(indexPlayerReplacing)).getComponent(coords[0]).setVisible(false);
+					}
+				}
+			
+			}
 		}
 	}
 
 	class PileListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			System.out.println(currentStage + " + PILE:current stage");
+
 			JButton pile = (JButton) e.getSource();
 
 			int pileIndex = pilePanel.getComponentZOrder(pile);
@@ -166,6 +204,7 @@ class GameGUI extends JFrame
 				case PICKPILE:
 					// pick card from the chosen pile
 					cardInUse = game.pickCard(pileIndex);
+					System.out.println(cardInUse.getValue()+"card form pile");
 
 					if (pileIndex == 0){// Draw => FlipCard or Replace or Steal
 						currentStage = Stage.STEAL;
@@ -193,18 +232,14 @@ class GameGUI extends JFrame
 						tools.setEnabled(pilePanel, false);
 					}
 					break;
-					
-				default:
-					System.out.println(currentStage + ":current stage");
-					break;
 			}
-			System.out.println(currentStage + " + PILE:current stage");
 		}
 	}
 
 	class EndListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			System.out.println(currentStage + " + END:");
 			switch (currentStage) {
 				case CHECKWIN:
 					game.checkAllVisible();
@@ -216,7 +251,6 @@ class GameGUI extends JFrame
 					// get index of next player who hasn't played last turn
 					indexPlayerPlaying = game.nextPlayer();
 					game.checkAllVisible();
-					System.out.println(indexPlayerPlaying);
 					if (game.checkEndGame()){
 						System.out.println("end of game!!!");
 					}
@@ -255,10 +289,8 @@ class GameGUI extends JFrame
 					
 			
 				default:
-					System.out.println(currentStage + ":current stage");
 					break;
 			}
-			System.out.println(currentStage + " + END:current stage");
 		}
 	}
 
@@ -274,6 +306,8 @@ class GameGUI extends JFrame
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			System.out.println(currentStage + " + STEAL:");
+
 			switch (currentStage) {
 				case STEAL:
 					System.out.println(id+" player is stealing");

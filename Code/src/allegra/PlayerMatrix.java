@@ -51,7 +51,9 @@ public class PlayerMatrix {
 	{
 		// returns value that was swapped
 		checkAllVisible();
-		card.flipCard();
+		if (card != null) {
+			card.flipCard();	
+		}
 		return this.matrix.get(x).set(y, card);
 	}
 	

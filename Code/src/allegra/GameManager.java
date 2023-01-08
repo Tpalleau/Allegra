@@ -54,8 +54,8 @@ public class GameManager {
 		playerPlaying.showMatrix();
 	}
 
-	public int[][] checkAlligned(){
-		return playerPlaying.removeAligned();
+	public int[][] checkAlligned(int indexPlayer){
+		return listPlayers.get(indexPlayer).removeAligned();
 	}
 
 	/**
@@ -74,8 +74,8 @@ public class GameManager {
 		return playerPlaying.flipCard(x, y);
 	}
 
-	public int getNeighborIndex(){
-		return (indexPlayerPlaying+1)%listPlayers.size();
+	public int getNeighborIndex(int Indexplayer){
+		return (Indexplayer+1)%listPlayers.size();
 	}
 	
 	/**
@@ -92,16 +92,17 @@ public class GameManager {
 		};
 	}
 
-	/**
+		/**
 	 * replace card in the player matrix at the coords and return value of card sent to discard
 	 * @param x & y
 	 * @param card
 	 */
-	public int replaceCard(int x, int y, Card card){
-		Card removedCard = playerPlaying.replaceCard(x, y, card);
+	public int replaceCard(int x, int y, Card card, int indexPlayer){
+		Card removedCard = listPlayers.get(indexPlayer).replaceCard(x, y, card);
 		discardCard(removedCard);
 		return removedCard.getValue();
-}
+	}
+
 
 	/**
 	 * the card in param is sent to discard

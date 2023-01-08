@@ -168,6 +168,19 @@ public class PlayerMatrix {
 		return null;
 	}
 	
+	public int scoreMatrix() {
+        
+	    int score = 0;
+	    for (int i = 0; i < this.matrix.size(); i++) {
+	        for (int j = 0; j < this.matrix.get(i).size(); j++) {
+	            if(this.matrix.get(i).get(j) != null) {
+	                score += this.matrix.get(i).get(j).getValue();
+	            }
+	        }
+	    }
+	    return score;
+	}
+	
 	protected boolean checkAllVisible(){
 		for (int x=0; x<4; x++){
 

@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -40,6 +41,7 @@ class GameGUI extends JFrame
 		REPLACE,
 		FLIPCARD,
 		STEAL,
+		PICKSTEALER,
 		STEALREPLACE,
 		STEALPICK
 	}
@@ -47,12 +49,12 @@ class GameGUI extends JFrame
 
 	private Stage currentStage = Stage.PICKPILE;
 	private int indexPlayerPlaying = 0;
+	private int indexStealPlayer;
 
 	private List<JPanel> listPlayers;
-	private JPanel panelVol;
+	private List<VolListener> listVolListener = new ArrayList<>();
 	private JPanel pilePanel;
 	private JButton endButton;
-	private JLabel narrator;
 
 	private Card cardInUse;
 
@@ -138,10 +140,8 @@ class GameGUI extends JFrame
 					break;
 				case STEALPICK:
 					break;
-				default:
-					System.out.println(currentStage + ":current stage");
 			}	
-			System.out.println(currentStage + ":current stage");
+			System.out.println(currentStage + " + CARDS:current stage");
 
 		}
 	}
@@ -161,11 +161,12 @@ class GameGUI extends JFrame
 					cardInUse = game.pickCard(pileIndex);
 
 					if (pileIndex == 0){// Draw => FlipCard or Replace or Steal
+						currentStage = Stage.STEAL;
 						pilePanel.getComponent(1).setEnabled(false);
 						endButton.setEnabled(true);
 						endButton.setText("End steal");
 						tools.setImage(pile, cardInUse.getValue());
-						currentStage = Stage.STEAL;
+						listVolListener.forEach(v -> v.volButton.setEnabled(true));
 					}else{ //discard => REPLACE (deactivate pile)
 						tools.setEnabled(pilePanel, false);
 						currentStage = Stage.REPLACE;
@@ -177,19 +178,20 @@ class GameGUI extends JFrame
 					break;
 
 				case DRAWPILE: // equivelent to discarding a card
-					assert pileIndex == 1;
-					tools.setImage(pilePanel.getComponent(0), -2);
-					game.discardCard(cardInUse);
-					tools.setImage(pile, cardInUse.getValue());
-					tools.setEnabled(pilePanel, false);
-					currentStage = Stage.FLIPCARD;
+					if (pileIndex == 1) {
+						currentStage = Stage.FLIPCARD;
+						tools.setImage(pilePanel.getComponent(0), -2);
+						game.discardCard(cardInUse);
+						tools.setImage(pilePanel.getComponent(1), cardInUse.getValue());
+						tools.setEnabled(pilePanel, false);
+					}
 					break;
 					
 				default:
 					System.out.println(currentStage + ":current stage");
 					break;
 			}
-			System.out.println(currentStage + ":current stage");
+			System.out.println(currentStage + " + PILE:current stage");
 		}
 	}
 
@@ -212,26 +214,74 @@ class GameGUI extends JFrame
 					break;
 				
 				case STEAL:
+					for (VolListener volListener : listVolListener) {
+						volListener.volButton.setEnabled(false);
+					}
+					List<VolListener> steal = listVolListener.stream().filter(v -> v.steal).collect(Collectors.toList()); 
+					if (steal.size() != 0){ // player has asked to steal => accept or decline
+						currentStage = Stage.PICKSTEALER;
+						for (VolListener volListener : steal) {
+							volListener.volButton.setEnabled(true);
+							volListener.volButton.setText("pick");
+						}
+						endButton.setText("refuse");
+					}else{ // no player wants to steal => replace or discard CardInUse
+						currentStage = Stage.DRAWPILE;
+						tools.setEnabled(listPlayers.get(indexPlayerPlaying), true);
+						tools.setPartialDisable(listPlayers.get(game.getNeighborIndex()));
+						pilePanel.getComponent(1).setEnabled(true);
+						endButton.setEnabled(false);
+					}
+					break;
+
+				case PICKSTEALER: // steal was refused
 					currentStage = Stage.DRAWPILE;
 					tools.setEnabled(listPlayers.get(indexPlayerPlaying), true);
 					tools.setPartialDisable(listPlayers.get(game.getNeighborIndex()));
 					pilePanel.getComponent(1).setEnabled(true);
-
+					endButton.setEnabled(false);
 					break;
+					
 			
 				default:
 					System.out.println(currentStage + ":current stage");
 					break;
 			}
-			System.out.println(currentStage + ":current stage");
-
-			// always disabled after clicking end
-			endButton.setEnabled(false);
+			System.out.println(currentStage + " + END:current stage");
 		}
 	}
 
-	// GUI
+	class VolListener implements ActionListener{
+		private int id;
+		private JButton volButton;
+		private boolean steal = false;
 
+		public VolListener(int id, JButton button){
+			this.id = id;
+			this.volButton = button;
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			switch (currentStage) {
+				case STEAL:
+					System.out.println(id+" player is stealing");
+					steal = true;
+					volButton.setEnabled(false);
+					break;
+				case PICKSTEALER:
+					currentStage = Stage.STEALREPLACE;
+					indexStealPlayer = id;
+					listVolListener.forEach(v -> v.volButton.setEnabled(false));
+					listVolListener.forEach(v -> v.steal = false);
+
+				default:
+					break;
+			}
+		}
+	}
+
+	// GUI 
 	private void createScreen(){
 		getContentPane().setLayout(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -313,12 +363,18 @@ class GameGUI extends JFrame
 		int yUI = CARD_GAP*3 + CARD_SIZE*3;
 		for (int playerN = 0; playerN < nbPlayers; playerN++) {
 
-			JPanel UIpanel = new JPanel(new GridLayout(1, 4, CARD_GAP, 0));
+			JPanel UIpanel = new JPanel(new GridLayout(1, 3, CARD_GAP, 0));
+			
 
 			UIpanel.setBounds(xUI, yUI, WIDTH_UI, HEIGHT_UI);
-			JButton vol = new JButton("Vol");
 			JLabel name = new JLabel("player"+(playerN+1));
 			JLabel pion = new JLabel(new ImageIcon("ressources\\pion.png"));
+
+			JButton vol = new JButton("Vol");
+			vol.setEnabled(false);
+			VolListener volListener = new VolListener(playerN, vol);
+			listVolListener.add(volListener);
+			vol.addActionListener(volListener);
 			
 			// shift when changing from top to bottom
 			xUI += (playerN == 3) ? CARD_GAP + CARD_SIZE : 0;

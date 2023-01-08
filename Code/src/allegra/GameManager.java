@@ -3,8 +3,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import allegra.PlayerMatrix;
-
 public class GameManager {
 	private List<PlayerMatrix> listPlayers = new ArrayList<>();
 	private DrawPile drawPile = new DrawPile();
@@ -63,13 +61,17 @@ public class GameManager {
 
 	/**
 	 * changes internal playerPlaying to the next player who has not played last turn
+	 * if a player has played last turn the next players will have last turn activated
 	 * @return index of next player
 	 */
 	public int nextPlayer(){
+		boolean lastTurn = listPlayers.stream().anyMatch(p -> p.lastTurnPLayed);
 		do {
-			indexPlayerPlaying = (indexPlayerPlaying+1)%listPlayers.size();
+			// get next player
+			indexPlayerPlaying = getNeighborIndex(indexPlayerPlaying);
 			playerPlaying = listPlayers.get(indexPlayerPlaying);
-		} while (playerPlaying.lastTurnPLayed);
+		} while (playerPlaying.lastTurnPLayed); // if he has played his last turn skip
+		listPlayers.get(indexPlayerPlaying).lastTurnPLayed = lastTurn; // if a player has played his last turn activate his
 		return indexPlayerPlaying;
 	}
 

@@ -2,6 +2,7 @@ package GUI;
 
 import allegra.Card;
 import allegra.GameManager;
+import GUI.EndingMenu;
 
 import tools.*;
 import java.util.ArrayList;
@@ -95,7 +96,7 @@ class GameGUI extends JFrame
 				cardCoord[0] = 4;
 				cardCoord[1] = cardIndex/4;
 			}else{
-				cardCoord = tools.convert(cardIndex);
+				cardCoord = tools.convert(cardIndex, indexPlayerPlaying);
 			}
 
 			switch (currentStage) {
@@ -159,7 +160,7 @@ class GameGUI extends JFrame
 					currentStage = Stage.CHECKWIN;
 					// replace cards and store the moved cards
 					System.out.println(cardCoord[0]+","+cardCoord[1]+" and "+indexCardSteal+" and "+indexStealPlayer);
-					Card[] cardsMoved = game.stealCard(cardCoord, indexStealPlayer, tools.convert(indexCardSteal));
+					Card[] cardsMoved = game.stealCard(cardCoord, indexStealPlayer, tools.convert(indexCardSteal, indexStealPlayer));
 					// update the player playing card
 					tools.setImage(buttonPressed, cardsMoved[0].getValue());
 					// update the stealer card
@@ -179,7 +180,7 @@ class GameGUI extends JFrame
 				// go through the 3 coords to remove the cards
 				for (int i = 0; i < coordCardsToDiscard.length; i++) {
 					// convert to JButton coord
-					int [] coords = tools.convert(coordCardsToDiscard[i][0], coordCardsToDiscard[i][1]);
+					int [] coords = tools.convert(coordCardsToDiscard[i][0], coordCardsToDiscard[i][1], indexPlayerReplacing);
 					// check if its current player or neighbor table
 					if (coords[1] == 1) {
 						listPlayers.get(indexPlayerReplacing).getComponent(coords[0]).setVisible(false);
@@ -246,18 +247,20 @@ class GameGUI extends JFrame
 			System.out.println(currentStage + " + END:");
 			switch (currentStage) {
 				case CHECKWIN:
-					game.checkAllVisible();
-					currentStage = Stage.PICKPILE;
+					if (game.checkEndGame()){
+						System.out.println("end of game!!!");
+						new GUI.EndingMenu(game.getHashMap());
+					}
 
+					currentStage = Stage.PICKPILE;
+					
+					// deactivate player matrix before switching to next player
 					tools.setEnabled(listPlayers.get(indexPlayerPlaying), false);
 					tools.setEnabled(listPlayers.get(game.getNeighborIndex(indexPlayerPlaying)), false);
 
 					// get index of next player who hasn't played last turn
 					indexPlayerPlaying = game.nextPlayer();
-					game.checkAllVisible();
-					if (game.checkEndGame()){
-						System.out.println("end of game!!!");
-					}
+					System.out.println(game.checkAllVisible());
 					tools.setEnabled(pilePanel, true);
 					endButton.setEnabled(false);
 					break;

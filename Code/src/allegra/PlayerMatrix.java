@@ -170,6 +170,10 @@ public class PlayerMatrix {
 		return null;
 	}
 	
+	/**
+	 * return the total score by adding value of every card
+	 * @return
+	 */
 	public int getScore() {
         
 	    int score = 0;
@@ -183,6 +187,10 @@ public class PlayerMatrix {
 	    return score;
 	}
 	
+	/**
+	 * checks if all cards are visible
+	 * @return
+	 */
 	protected boolean checkAllVisible(){
 		for (int x=0; x<4; x++){
 

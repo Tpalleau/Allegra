@@ -11,21 +11,52 @@ public class tools {
         b.setIcon(new ImageIcon("ressources\\"+value+".jpg"));
     }
 
-    public static int[] convert(int x, int y){
+    /**
+     * convert matrix coord to JFrame coord
+     * @param x
+     * @param y
+     * @param indexPlayer
+     * @return
+     */
+    public static int[] convert(int x, int y, int indexPlayer){
         // second value corresponds to current player or neighbor
         // 1: current player, 2: neighbor
-        if (x < 4) {
-            return new int[] {x + y*4, 1};
+
+        // if top matrix
+        if (indexPlayer < 2) {
+            if (x < 4) { // regular coord
+                return new int[] {x + y*4, 1};
+            }else{ // neighbor coord
+                return new int[] {x*y, 2};
+            }
         }else{
-            return new int[] {x*y, 2};
+            if (x < 4) { // regular coord
+                x = (x+12)%4;
+                return new int[] {x + y*4, 1};
+            }else{ // neighbor coord
+                return new int[] {x*(y+1) -1, 2};
+            }
         }
     }
 
-    public static int[] convert(int i){
+    /**
+     * convert JFrame coord to matrix coord
+     * @param i
+     * @param indexPlayer
+     * @return
+     */
+    public static int[] convert(int i, int indexPlayer){
         int x, y; 
-        y = i/4;
-        x = i - (y*4);
-        return new int[] {x, y};
+        // top matrix
+        if (indexPlayer< 3) {
+            y = i/4;
+            x = i - (y*4);
+            return new int[] {x, y};
+        }else{ // bottom matrix
+            y = i/4;
+            x = (y+1)*4 - (i+1);
+            return new int[] {x, y};
+        }
     }
 
     public static void setEnabled(JPanel panel, boolean enabled) {

@@ -70,8 +70,9 @@ public class GameManager {
 			// get next player
 			indexPlayerPlaying = getNeighborIndex(indexPlayerPlaying);
 			playerPlaying = listPlayers.get(indexPlayerPlaying);
-		} while (playerPlaying.lastTurnPLayed); // if he has played his last turn skip
+		} while (playerPlaying.checkAllVisible()); // if he has played his last turn skip
 		listPlayers.get(indexPlayerPlaying).lastTurnPLayed = lastTurn; // if a player has played his last turn activate his
+		System.out.println(lastTurn+" :last turn");
 		return indexPlayerPlaying;
 	}
 
@@ -159,11 +160,19 @@ public class GameManager {
 	 * @return bool
 	 */
 	public boolean checkEndGame(){
-		for (PlayerMatrix player : listPlayers) {
-			if (!player.lastTurnPLayed) {
+		for (int i = 0; i < listPlayers.size(); i++) {
+			if (!listPlayers.get(i).lastTurnPLayed) {
+				System.out.println(i + "player blocking " + listPlayers.get(i).lastTurnPLayed);
 				return false;
 			}
 		}
+		// for (PlayerMatrix player : listPlayers) {
+		// 	System.out
+		// 	if (!player.lastTurnPLayed) {
+		// 		return false;
+		// 	}
+		// }
 		return true;
 	}
+
 }

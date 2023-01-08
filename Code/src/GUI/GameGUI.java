@@ -166,13 +166,10 @@ class GameGUI extends JFrame
 				case SWAP: // player playing selects a card to swap and swaps it with swapPicked card
 					currentStage = Stage.CHECKWIN;
 					// replace cards and store the moved cards
-					System.out.println(cardCoord[0]+","+cardCoord[1]+" and "+indexCardSteal+" and "+indexStealPlayer);
 					Card[] cardsMoved = game.stealCard(cardCoord, indexStealPlayer, tools.convert(indexCardSteal, indexStealPlayer));
 					// update the player playing card
 					tools.setImage(buttonPressed, cardsMoved[0].getValue());
 					// update the stealer card
-					System.out.println("index steal player" + indexStealPlayer);
-					System.out.println("index card steal"+indexCardSteal);
 					tools.setImage(listPlayers.get(indexStealPlayer).getComponent(indexCardSteal), cardsMoved[1].getValue());
 
 					//activate end button
@@ -257,6 +254,7 @@ class GameGUI extends JFrame
 			switch (currentStage) {
 				case CHECKWIN:
 					game.checkAllVisible();
+					
 					if (game.checkEndGame()){
 						System.out.println("end of game!!!");
 						new GUI.EndingMenu(game.getHashMap());

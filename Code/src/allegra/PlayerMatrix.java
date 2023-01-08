@@ -41,7 +41,7 @@ public class PlayerMatrix {
 	}
 	
 	/**
-	 * replace card A with B and checkAllVisible -> updates lastTurnPlayed
+	 * replace card A with B
 	 * @param x
 	 * @param y
 	 * @param card
@@ -50,7 +50,6 @@ public class PlayerMatrix {
 	protected Card replaceCard(int x, int y, Card card)
 	{
 		// returns value that was swapped
-		checkAllVisible();
 		if (card != null) {
 			card.flipCard();	
 		}

@@ -170,7 +170,7 @@ public class PlayerMatrix {
 		return null;
 	}
 	
-	public int scoreMatrix() {
+	public int getScore() {
         
 	    int score = 0;
 	    for (int i = 0; i < this.matrix.size(); i++) {

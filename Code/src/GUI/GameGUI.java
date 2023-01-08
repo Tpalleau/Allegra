@@ -63,15 +63,6 @@ class GameGUI extends JFrame
 
 	public GameGUI(int nbPlayers)
 	{
-		// messages
-		StageMessage.put(Stage.PICKPILE, "pick a card from a pile P");
-		StageMessage.put(Stage.DRAWPILE, "replace with a card or discard it P");
-		StageMessage.put(Stage.STEALREPLACE, "replace with one of your own P");
-		StageMessage.put(Stage.STEALPICK, "pick a card you wish to steal P");
-		StageMessage.put(Stage.REPLACE, "replace with one of your cards P");
-		StageMessage.put(Stage.FLIPCARD, "pick a card to flip P");
-
-
 		this.createScreen();
 		this.pile();
 		this.listPlayers = this.drawPlayerButtons(nbPlayers);
@@ -84,7 +75,6 @@ class GameGUI extends JFrame
 	class CardListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			System.out.println(currentStage + " + CARDS:current stage");
 
 			JButton buttonPressed = (JButton) e.getSource();
 			int cardIndex = listPlayers.get(indexPlayerPlaying).getComponentZOrder(buttonPressed);
@@ -121,7 +111,6 @@ class GameGUI extends JFrame
 						endButton.setEnabled(true);
 						tools.setEnabled(pilePanel, false);
 					}
-					System.out.println(cardInUse.getValue()+" card from pile");
 					// update card pressed with the replaced card image
 					tools.setImage(buttonPressed, cardInUse.getValue());
 					// get the discarded card
@@ -175,6 +164,8 @@ class GameGUI extends JFrame
 					//activate end button
 					endButton.setEnabled(true);
 
+					removeAlligne(indexPlayerPlaying);
+
 					break;
 			}
 		}
@@ -202,7 +193,6 @@ class GameGUI extends JFrame
 	class PileListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			System.out.println(currentStage + " + PILE:current stage");
 
 			JButton pile = (JButton) e.getSource();
 
@@ -214,7 +204,6 @@ class GameGUI extends JFrame
 				case PICKPILE:
 					// pick card from the chosen pile
 					cardInUse = game.pickCard(pileIndex);
-					System.out.println(cardInUse.getValue()+"card form pile");
 
 					if (pileIndex == 0){// Draw => FlipCard or Replace or Steal
 						currentStage = Stage.STEAL;
@@ -250,13 +239,11 @@ class GameGUI extends JFrame
 	class EndListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			System.out.println(currentStage + " + END:");
 			switch (currentStage) {
 				case CHECKWIN:
 					game.checkAllVisible();
-					
+
 					if (game.checkEndGame()){
-						System.out.println("end of game!!!");
 						new GUI.EndingMenu(game.getHashMap());
 					}
 
@@ -268,7 +255,6 @@ class GameGUI extends JFrame
 
 					// get index of next player who hasn't played last turn
 					indexPlayerPlaying = game.nextPlayer();
-					System.out.println(game.checkAllVisible());
 					tools.setEnabled(pilePanel, true);
 					endButton.setEnabled(false);
 					break;
@@ -321,11 +307,9 @@ class GameGUI extends JFrame
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			System.out.println(currentStage + " + STEAL:");
 
 			switch (currentStage) {
 				case STEAL:
-					System.out.println(id+" player is stealing");
 					steal = true;
 					volButton.setEnabled(false);
 					break;

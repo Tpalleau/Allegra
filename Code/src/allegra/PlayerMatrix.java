@@ -8,24 +8,6 @@ public class PlayerMatrix {
 	private List<List<Card>> matrix = new ArrayList<>();
 	public boolean lastTurnPLayed = false;
 
-	//temporary method for DEBUG keep till end of project
-	public void showMatrix(){
-		System.out.println("matrix size :" + this.matrix.size());
-
-		for (int i = 0; i < this.matrix.size(); i++) {
-			System.out.println("	matrix subsize:" + this.matrix.get(i).size());
-			System.out.print("    ");
-			for (int j = 0; j < this.matrix.get(i).size(); j++) {
-				if (matrix.get(i).get(j) == null){
-					System.out.print("null ");
-				}else{
-					System.out.print(this.matrix.get(i).get(j).getValue() + " ");
-				}
-			}
-			System.out.println("    ");
-		}
-	}
-
 	public PlayerMatrix(List<List<Card>> dealedCards){
 		// add each column to list
 		for (List<Card> list : dealedCards) {

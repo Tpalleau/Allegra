@@ -43,17 +43,6 @@ public class GameManager {
 		this.playerPlaying = this.listPlayers.get(indexPlayerPlaying);
 	}
 
-	// TEMP method for debug
-	public void showAllMatrix(){
-
-		for (int i = 0; i < listPlayers.size(); i++) {
-			System.out.println("matrix :" + i);
-			listPlayers.get(i).showMatrix();
-		}
-	}
-	public void showMatrix(){
-		playerPlaying.showMatrix();
-	}
 
 	public int[][] checkAlligned(int indexPlayer){
 		return listPlayers.get(indexPlayer).removeAligned();
@@ -72,7 +61,6 @@ public class GameManager {
 			playerPlaying = listPlayers.get(indexPlayerPlaying);
 		} while (playerPlaying.checkAllVisible()); // if he has played his last turn skip
 		listPlayers.get(indexPlayerPlaying).lastTurnPLayed = lastTurn; // if a player has played his last turn activate his
-		System.out.println(lastTurn+" :last turn");
 		return indexPlayerPlaying;
 	}
 
@@ -160,19 +148,11 @@ public class GameManager {
 	 * @return bool
 	 */
 	public boolean checkEndGame(){
-		for (int i = 0; i < listPlayers.size(); i++) {
-			if (!listPlayers.get(i).lastTurnPLayed) {
-				System.out.println(i + "player blocking " + listPlayers.get(i).lastTurnPLayed);
+		for (PlayerMatrix player : listPlayers) {
+			if (!player.lastTurnPLayed) {
 				return false;
 			}
 		}
-		// for (PlayerMatrix player : listPlayers) {
-		// 	System.out
-		// 	if (!player.lastTurnPLayed) {
-		// 		return false;
-		// 	}
-		// }
 		return true;
 	}
-
 }

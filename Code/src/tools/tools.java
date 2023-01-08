@@ -31,10 +31,10 @@ public class tools {
             }
         }else{
             if (x < 4) { // regular coord
-                x = (x+12)%4;
+                x = 3-x;
                 return new int[] {x + y*4, 1};
             }else{ // neighbor coord
-                return new int[] {x*(y+1) -1, 2};
+                return new int[] {x*(y+1)-1, 2};
             }
         }
     }

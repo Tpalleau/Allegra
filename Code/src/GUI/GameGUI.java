@@ -90,11 +90,18 @@ class GameGUI extends JFrame
 			int cardIndex = listPlayers.get(indexPlayerPlaying).getComponentZOrder(buttonPressed);
 			int[] cardCoord = new int[2];
 
-			// if select shared column
+			// if select shared column or not player playing
 			if (cardIndex == -1){
-				cardIndex = listPlayers.get(game.getNeighborIndex(indexPlayerPlaying)).getComponentZOrder(buttonPressed);
-				cardCoord[0] = 4;
-				cardCoord[1] = cardIndex/4;
+				if (currentStage == Stage.PICKSWAP){ // player picking from a different matrix
+					cardIndex = listPlayers.get(indexStealPlayer).getComponentZOrder(buttonPressed);
+					if (cardIndex == -1){
+						cardIndex = listPlayers.get(game.getNeighborIndex(indexStealPlayer)).getComponentZOrder(buttonPressed);
+					}
+				}else{// neighbor matrix
+					cardIndex = listPlayers.get(game.getNeighborIndex(indexPlayerPlaying)).getComponentZOrder(buttonPressed);
+					cardCoord[0] = 4;
+					cardCoord[1] = cardIndex/4;
+				}
 			}else{
 				cardCoord = tools.convert(cardIndex, indexPlayerPlaying);
 			}
@@ -114,7 +121,7 @@ class GameGUI extends JFrame
 						endButton.setEnabled(true);
 						tools.setEnabled(pilePanel, false);
 					}
-					System.out.println(cardInUse.getValue()+"card form pile");
+					System.out.println(cardInUse.getValue()+" card from pile");
 					// update card pressed with the replaced card image
 					tools.setImage(buttonPressed, cardInUse.getValue());
 					// get the discarded card
@@ -145,7 +152,7 @@ class GameGUI extends JFrame
 
 				case PICKSWAP: // player playing picks a card to swap from playerStealing
 					currentStage = Stage.SWAP;
-
+					
 					indexCardSteal = cardIndex;
 					// disable the stealer matrix
 					tools.setEnabled(listPlayers.get(indexStealPlayer), false);
@@ -164,6 +171,8 @@ class GameGUI extends JFrame
 					// update the player playing card
 					tools.setImage(buttonPressed, cardsMoved[0].getValue());
 					// update the stealer card
+					System.out.println("index steal player" + indexStealPlayer);
+					System.out.println("index card steal"+indexCardSteal);
 					tools.setImage(listPlayers.get(indexStealPlayer).getComponent(indexCardSteal), cardsMoved[1].getValue());
 
 					//activate end button
@@ -247,6 +256,7 @@ class GameGUI extends JFrame
 			System.out.println(currentStage + " + END:");
 			switch (currentStage) {
 				case CHECKWIN:
+					game.checkAllVisible();
 					if (game.checkEndGame()){
 						System.out.println("end of game!!!");
 						new GUI.EndingMenu(game.getHashMap());

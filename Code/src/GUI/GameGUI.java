@@ -308,7 +308,7 @@ class GameGUI extends JFrame
 		final int VGAP = HEIGHT_UI + CARD_SIZE + CARD_GAP;
 
 		int xUI = CARD_GAP;
-		int xUI2 = CARD_GAP * 2 + CARD_SIZE/2 + CARD_SIZE;
+		int xUI2 = CARD_GAP * 4 + CARD_SIZE * 3;
 		int yUI = CARD_GAP*4 + CARD_SIZE*3;
 		for (int playerN = 0; playerN < nbPlayers; playerN++) {
 
@@ -322,10 +322,9 @@ class GameGUI extends JFrame
 			xUI += (playerN == 3) ? 138 : 0;
 			yUI += (playerN == 3) ? VGAP: 0;
 			if (playerN < 3){ // top grid UI is on right side
-				volPanel.setBounds(xUI2, yUI, CARD_SIZE, HEIGHT_UI);
+				volPanel.setBounds(xUI, yUI, CARD_SIZE, HEIGHT_UI);
 				UIpanel.setBounds(xUI , yUI, WIDTH_UI, HEIGHT_UI);
 				xUI += HGAP;
-				xUI2 += HGAP;
 
 				volPanel.add(vol);
 				UIpanel.add(pion);
@@ -333,7 +332,7 @@ class GameGUI extends JFrame
 			}else{ // bottom grid UI is on the left side
 				
 				xUI -= HGAP;
-				xUI2 -= HGAP;
+				xUI2 += HGAP;
 				volPanel.setBounds(xUI2, yUI, CARD_SIZE, HEIGHT_UI);
 				UIpanel.setBounds(xUI , yUI, WIDTH_UI, HEIGHT_UI);
 				

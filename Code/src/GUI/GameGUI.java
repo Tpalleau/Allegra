@@ -181,7 +181,7 @@ class GameGUI extends JFrame
 
 					// allows player to see their cards but cant interact with them
 					tools.setEnabled(listPlayers.get(indexPlayerPlaying), true);
-					tools.setPartialDisable(listPlayers.get(game.getNeighborIndex(indexPlayerPlaying)));
+					tools.setPartialDisable(listPlayers.get(game.getNeighborIndex(indexPlayerPlaying)), game.getNeighborIndex(indexPlayerPlaying));
 					break;
 
 				case DRAWPILE: // equivelent to discarding a card
@@ -235,7 +235,7 @@ class GameGUI extends JFrame
 					}else{ // no player wants to steal => replace or discard CardInUse
 						currentStage = Stage.DRAWPILE;
 						tools.setEnabled(listPlayers.get(indexPlayerPlaying), true);
-						tools.setPartialDisable(listPlayers.get(game.getNeighborIndex(indexPlayerPlaying)));
+						tools.setPartialDisable(listPlayers.get(game.getNeighborIndex(indexPlayerPlaying)), game.getNeighborIndex(indexPlayerPlaying));
 						pilePanel.getComponent(1).setEnabled(true);
 						endButton.setEnabled(false);
 					}
@@ -244,7 +244,7 @@ class GameGUI extends JFrame
 				case PICKSTEALER: // steal was refused
 					currentStage = Stage.DRAWPILE;
 					tools.setEnabled(listPlayers.get(indexPlayerPlaying), true);
-					tools.setPartialDisable(listPlayers.get(game.getNeighborIndex(indexPlayerPlaying)));
+					tools.setPartialDisable(listPlayers.get(game.getNeighborIndex(indexPlayerPlaying)), game.getNeighborIndex(indexPlayerPlaying));
 					pilePanel.getComponent(1).setEnabled(true);
 					endButton.setEnabled(false);
 					break;
@@ -287,7 +287,7 @@ class GameGUI extends JFrame
 
 					// activate the player stealing cards
 					tools.setEnabled(listPlayers.get(indexStealPlayer), true);
-					tools.setPartialDisable(listPlayers.get(game.getNeighborIndex(indexStealPlayer)));
+					tools.setPartialDisable(listPlayers.get(game.getNeighborIndex(indexStealPlayer)),game.getNeighborIndex(indexStealPlayer));
 
 				default:
 					break;

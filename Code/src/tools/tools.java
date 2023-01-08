@@ -35,15 +35,17 @@ public class tools {
         }
     }
 
-    public static void setPartialDisable(JPanel panel) {
+    public static void setPartialDisable(JPanel panel, int indexplayer) {
         Component[] components = panel.getComponents();
-        for (int i = 0; i < components.length; i++) {
-            if (i %4 != 0){
-                components[i].setEnabled(false);
-            }else{
-                components[i].setEnabled(true);
-            }
-        }
-    }
+        int columnShifter= (indexplayer > 2) ? 1 : 0;
 
+        // top matrix: make left column accessible
+            for (int i = 0; i < components.length; i++) {
+                if ((i+columnShifter)%4 != 0){
+                    components[i].setEnabled(false);
+                }else{
+                    components[i].setEnabled(true);
+                }
+            }
+    }
 }

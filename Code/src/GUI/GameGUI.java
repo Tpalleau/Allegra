@@ -325,6 +325,7 @@ class GameGUI extends JFrame
 				volPanel.setBounds(xUI2, yUI, CARD_SIZE, HEIGHT_UI);
 				UIpanel.setBounds(xUI , yUI, WIDTH_UI, HEIGHT_UI);
 				xUI += HGAP;
+				xUI2 += HGAP;
 
 				volPanel.add(vol);
 				UIpanel.add(pion);
@@ -332,6 +333,7 @@ class GameGUI extends JFrame
 			}else{ // bottom grid UI is on the left side
 				
 				xUI -= HGAP;
+				xUI2 -= HGAP;
 				volPanel.setBounds(xUI2, yUI, CARD_SIZE, HEIGHT_UI);
 				UIpanel.setBounds(xUI , yUI, WIDTH_UI, HEIGHT_UI);
 				

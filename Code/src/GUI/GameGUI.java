@@ -209,15 +209,19 @@ class GameGUI extends JFrame
 				case CHECKWIN:
 					game.checkAllVisible();
 					currentStage = Stage.PICKPILE;
+
+					tools.setEnabled(listPlayers.get(indexPlayerPlaying), false);
+					tools.setEnabled(listPlayers.get(game.getNeighborIndex(indexPlayerPlaying)), false);
+
+					// get index of next player who hasn't played last turn
 					indexPlayerPlaying = game.nextPlayer();
 					game.checkAllVisible();
+					System.out.println(indexPlayerPlaying);
 					if (game.checkEndGame()){
 						System.out.println("end of game!!!");
 					}
-					// get index of next player who hasn't played last turn
-					tools.setEnabled(listPlayers.get(indexPlayerPlaying), false);
-					tools.setEnabled(listPlayers.get(game.getNeighborIndex(indexPlayerPlaying)), false);
 					tools.setEnabled(pilePanel, true);
+					endButton.setEnabled(false);
 					break;
 				
 				case STEAL:

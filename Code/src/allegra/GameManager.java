@@ -21,7 +21,7 @@ public class GameManager {
 	 */
 	public GameManager(int numPlayers)
 	{
-		playersHashMap = createHashMap(numPlayers, playersHashMap);
+		playersHashMap = new HashMap<Integer, Integer>();
 		List<Card> dealtCards = drawPile.dealCards(numPlayers);
 		int columns = dealtCards.size()/3;
 		// allow references in player matrixes
@@ -141,16 +141,14 @@ public class GameManager {
 
 	}
 	
-	public HashMap<Integer, Integer> createHashMap(int nbPlayers, HashMap<Integer, Integer> hashmap){
-		
+	
+	public HashMap<Integer, Integer> updateHashMap(int nbPlayers, HashMap<Integer, Integer> hashmap) {
 		for(int i = 0; i < nbPlayers; i++) {
-			hashmap.put(i, 0);
+			this.playerPlaying = listPlayers.get(indexPlayerPlaying);
+			hashmap.put(indexPlayerPlaying, playerPlaying.scoreMatrix());
+			this.indexPlayerPlaying = nextPlayer();
 		}
 		return hashmap;
-	}
-	
-	public void updateHashMap(PlayerMatrix player, HashMap<Integer, Integer> hashmap) {
-		hashmap.put(indexPlayerPlaying, player.scoreMatrix());
 	}
 
 	/**

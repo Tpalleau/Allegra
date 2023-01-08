@@ -123,6 +123,7 @@ class GameGUI extends JFrame
 					tools.setImage(pilePanel.getComponent(0), -2);
 					// update discard pile card image
 					tools.setImage(pilePanel.getComponent(1), cardInUse.getValue());
+					removeAlligne(indexPlayerReplacing);
 
 					break;
 				case FLIPCARD: // flip a card to show it

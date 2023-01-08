@@ -164,7 +164,9 @@ class GameGUI extends JFrame
 					tools.setImage(buttonPressed, cardsMoved[0].getValue());
 					// update the stealer card
 					tools.setImage(listPlayers.get(indexStealPlayer).getComponent(indexCardSteal), cardsMoved[1].getValue());
-					endButton.setText("End turn");
+
+					//activate end button
+					endButton.setEnabled(true);
 
 					break;
 			}
@@ -214,6 +216,7 @@ class GameGUI extends JFrame
 						endButton.setText("End steal");
 						tools.setImage(pile, cardInUse.getValue());
 						listVolListener.forEach(v -> v.volButton.setEnabled(true));
+						listVolListener.get(indexPlayerPlaying).volButton.setEnabled(false);
 					}else{ //discard => REPLACE (deactivate pile)
 						tools.setEnabled(pilePanel, false);
 						currentStage = Stage.REPLACE;
@@ -327,6 +330,10 @@ class GameGUI extends JFrame
 					// activate the player stealing cards
 					tools.setEnabled(listPlayers.get(indexStealPlayer), true);
 					tools.setPartialDisable(listPlayers.get(game.getNeighborIndex(indexStealPlayer)),game.getNeighborIndex(indexStealPlayer));
+
+					// deactivate end button
+					endButton.setEnabled(false);
+					endButton.setText("End turn");
 
 				default:
 					break;

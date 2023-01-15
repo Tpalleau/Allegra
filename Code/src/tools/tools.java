@@ -23,7 +23,7 @@ public class tools {
         // 1: current player, 2: neighbor
 
         // if top matrix
-        if (indexPlayer < 2) {
+        if (indexPlayer < 3) {
             if (x < 4) { // regular coord
                 return new int[] {x + y*4, 1};
             }else{ // neighbor coord

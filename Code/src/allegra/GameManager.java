@@ -43,6 +43,19 @@ public class GameManager {
 		this.playerPlaying = this.listPlayers.get(indexPlayerPlaying);
 	}
 
+		// TEMP method for debug 
+		public void showAllMatrix(){ 
+ 
+			for (int i = 0; i < listPlayers.size(); i++) { 
+				System.out.println("matrix :" + i); 
+				listPlayers.get(i).showMatrix(); 
+			} 
+		} 
+		public void showMatrix(int playerN){
+			System.out.println(playerN+" index player");
+			listPlayers.get(playerN).showMatrix();
+		} 
+
 
 	public int[][] checkAlligned(int indexPlayer){
 		return listPlayers.get(indexPlayer).removeAligned();

@@ -2,6 +2,7 @@ package GUI;
 
 import allegra.Card;
 import allegra.GameManager;
+import allegra.PlayerMatrix;
 import GUI.EndingMenu;
 
 import tools.*;
@@ -50,7 +51,7 @@ class GameGUI extends JFrame
 
 	private Stage currentStage = Stage.PICKPILE;
 	private int indexPlayerPlaying = 0;
-	private int indexStealPlayer;
+	private int indexPlayerStealing;
 	private int indexCardSteal;
 
 	private List<JPanel> listPlayers;
@@ -77,23 +78,23 @@ class GameGUI extends JFrame
 		public void actionPerformed(ActionEvent e) {
 
 			JButton buttonPressed = (JButton) e.getSource();
-			int cardIndex = listPlayers.get(indexPlayerPlaying).getComponentZOrder(buttonPressed);
-			int[] cardCoord = new int[2];
-
-			// if select shared column or not player playing
-			if (cardIndex == -1){
-				if (currentStage == Stage.PICKSWAP){ // player picking from a different matrix
-					cardIndex = listPlayers.get(indexStealPlayer).getComponentZOrder(buttonPressed);
-					if (cardIndex == -1){
-						cardIndex = listPlayers.get(game.getNeighborIndex(indexStealPlayer)).getComponentZOrder(buttonPressed);
-					}
-				}else{// neighbor matrix
-					cardIndex = listPlayers.get(game.getNeighborIndex(indexPlayerPlaying)).getComponentZOrder(buttonPressed);
-					cardCoord[0] = 4;
-					cardCoord[1] = cardIndex/4;
+			int cardIndex;
+			int[] cardCoord;
+			boolean neighbor=false;
+			if (currentStage == Stage.STEALREPLACE || currentStage == Stage.PICKSWAP){// matrix from strealer
+				cardIndex = listPlayers.get(indexPlayerStealing).getComponentZOrder(buttonPressed);
+				if (cardIndex == -1){ //neighbor matrix
+					cardIndex = listPlayers.get(game.getNeighborIndex(indexPlayerStealing)).getComponentZOrder(buttonPressed);
+					neighbor = true;
 				}
+				cardCoord = convert(cardIndex, indexPlayerStealing, neighbor);
 			}else{
-				cardCoord = tools.convert(cardIndex, indexPlayerPlaying);
+				cardIndex = listPlayers.get(indexPlayerPlaying).getComponentZOrder(buttonPressed);
+				if (cardIndex == -1){
+					neighbor = true;
+					cardIndex = listPlayers.get(game.getNeighborIndex(indexPlayerPlaying)).getComponentZOrder(buttonPressed);
+				}
+				cardCoord = convert(cardIndex, indexPlayerPlaying, neighbor);
 			}
 
 			switch (currentStage) {
@@ -102,7 +103,7 @@ class GameGUI extends JFrame
 					if (currentStage == Stage.STEALREPLACE){ // replace as stealing player
 						currentStage = Stage.PICKSWAP;
 						
-						indexPlayerReplacing = indexStealPlayer;
+						indexPlayerReplacing = indexPlayerStealing;
 					}else{ // replace as playing player
 						currentStage = Stage.CHECKWIN;
 
@@ -114,12 +115,14 @@ class GameGUI extends JFrame
 					// update card pressed with the replaced card image
 					tools.setImage(buttonPressed, cardInUse.getValue());
 					// get the discarded card
+					System.out.println("replacing card at "+cardCoord[0]+" "+cardCoord[1]+" for "+indexPlayerReplacing);
 					cardInUse = game.replaceCard(cardCoord[0], cardCoord[1], cardInUse, indexPlayerReplacing);
 
 					// draw card face down on draw pile
 					tools.setImage(pilePanel.getComponent(0), -2);
 					// update discard pile card image
 					tools.setImage(pilePanel.getComponent(1), cardInUse.getValue());
+					game.showMatrix(indexPlayerReplacing);
 					removeAlligne(indexPlayerReplacing);
 
 					break;
@@ -140,6 +143,7 @@ class GameGUI extends JFrame
 					endButton.setEnabled(true);
 					endButton.setText("End turn");
 					// remove alligned cards
+					game.showMatrix(indexPlayerPlaying);
 					removeAlligne(indexPlayerPlaying);
 					break;
 
@@ -148,8 +152,8 @@ class GameGUI extends JFrame
 					
 					indexCardSteal = cardIndex;
 					// disable the stealer matrix
-					tools.setEnabled(listPlayers.get(indexStealPlayer), false);
-					tools.setEnabled(listPlayers.get(game.getNeighborIndex(indexStealPlayer)), false);
+					tools.setEnabled(listPlayers.get(indexPlayerStealing), false);
+					tools.setEnabled(listPlayers.get(game.getNeighborIndex(indexPlayerStealing)), false);
 
 					// enable the player playing
 					tools.setEnabled(listPlayers.get(indexPlayerPlaying), true);
@@ -159,29 +163,45 @@ class GameGUI extends JFrame
 				case SWAP: // player playing selects a card to swap and swaps it with swapPicked card
 					currentStage = Stage.CHECKWIN;
 					// replace cards and store the moved cards
-					Card[] cardsMoved = game.stealCard(cardCoord, indexStealPlayer, tools.convert(indexCardSteal, indexStealPlayer));
+					Card[] cardsMoved = game.stealCard(cardCoord, indexPlayerStealing, tools.convert(indexCardSteal, indexPlayerStealing));
 					// update the player playing card
 					tools.setImage(buttonPressed, cardsMoved[0].getValue());
 					// update the stealer card
-					tools.setImage(listPlayers.get(indexStealPlayer).getComponent(indexCardSteal), cardsMoved[1].getValue());
+					tools.setImage(listPlayers.get(indexPlayerStealing).getComponent(indexCardSteal), cardsMoved[1].getValue());
 
 					//activate end button
 					endButton.setEnabled(true);
-
+					game.showMatrix(indexPlayerPlaying);
 					removeAlligne(indexPlayerPlaying);
 
 					break;
 			}
 		}
 
+		public int[] convert(int cardIndex, int playerN, boolean neighbor){
+			int[] cardCoord = new int[2];
+
+			// if select shared column or not player playing
+			if (neighbor){
+				cardCoord = tools.convert(cardIndex, playerN);
+				cardCoord[0] = 4;
+				return cardCoord;
+			}
+			cardCoord = tools.convert(cardIndex, indexPlayerPlaying);
+			return cardCoord;
+		}
+		
 		public void removeAlligne(int indexPlayerReplacing){
 			// check if cards alligned
 			int[][] coordCardsToDiscard = game.checkAlligned(indexPlayerReplacing);
 			if (coordCardsToDiscard != null){
+				System.out.println(indexPlayerReplacing+" player playing");
 				// go through the 3 coords to remove the cards
 				for (int i = 0; i < coordCardsToDiscard.length; i++) {
+					System.out.println(coordCardsToDiscard[i][0]+" "+coordCardsToDiscard[i][1]+" coord");
 					// convert to JButton coord
 					int [] coords = tools.convert(coordCardsToDiscard[i][0], coordCardsToDiscard[i][1], indexPlayerReplacing);
+					System.out.println(coords[0]+" coord converted");
 					// check if its current player or neighbor table
 					if (coords[1] == 1) {
 						listPlayers.get(indexPlayerReplacing).getComponent(coords[0]).setVisible(false);
@@ -319,7 +339,7 @@ class GameGUI extends JFrame
 					break;
 				case PICKSTEALER: // picking stealer
 					currentStage = Stage.STEALREPLACE;
-					indexStealPlayer = id;
+					indexPlayerStealing = id;
 					listVolListener.forEach(v -> v.volButton.setEnabled(false));
 					listVolListener.forEach(v -> v.steal = false);
 					// deactivate the player playing cards
@@ -327,8 +347,8 @@ class GameGUI extends JFrame
 					tools.setEnabled(listPlayers.get(game.getNeighborIndex(indexPlayerPlaying)), false);
 
 					// activate the player stealing cards
-					tools.setEnabled(listPlayers.get(indexStealPlayer), true);
-					tools.setPartialDisable(listPlayers.get(game.getNeighborIndex(indexStealPlayer)),game.getNeighborIndex(indexStealPlayer));
+					tools.setEnabled(listPlayers.get(indexPlayerStealing), true);
+					tools.setPartialDisable(listPlayers.get(game.getNeighborIndex(indexPlayerStealing)),game.getNeighborIndex(indexPlayerStealing));
 
 					// deactivate end button
 					endButton.setEnabled(false);

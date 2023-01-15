@@ -64,8 +64,12 @@ public class GameManager {
 		return indexPlayerPlaying;
 	}
 
-	public int FlipCard(int x, int y){
+	public int flipCard(int x, int y){
 		return playerPlaying.flipCard(x, y);
+	}
+
+	public boolean isFlipped(int x, int y){
+		return playerPlaying.isFlipped(x, y);
 	}
 
 	public int getNeighborIndex(int Indexplayer){

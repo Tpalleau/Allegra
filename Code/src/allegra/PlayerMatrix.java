@@ -21,6 +21,10 @@ public class PlayerMatrix {
 	protected int flipCard(int x, int y){
 		return matrix.get(x).get(y).flipCard();
 	}
+
+	protected boolean isFlipped(int x, int y){
+		return matrix.get(x).get(y).getVisible();
+	}
 	
 	/**
 	 * replace card A with B

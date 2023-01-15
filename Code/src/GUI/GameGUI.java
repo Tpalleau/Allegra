@@ -124,9 +124,13 @@ class GameGUI extends JFrame
 
 					break;
 				case FLIPCARD: // flip a card to show it
+					if (game.isFlipped(cardCoord[0], cardCoord[1])){ //if card is already flip do nothing
+						break;
+					}
+
 					currentStage = Stage.CHECKWIN;
 					// set image of card fliped
-					tools.setImage(buttonPressed, game.FlipCard(cardCoord[0], cardCoord[1]));
+					tools.setImage(buttonPressed, game.flipCard(cardCoord[0], cardCoord[1]));
 					// deactivate player matrix
 					tools.setEnabled(listPlayers.get(indexPlayerPlaying), false);
 					tools.setEnabled(listPlayers.get(game.getNeighborIndex(indexPlayerPlaying)), false);
@@ -340,6 +344,7 @@ class GameGUI extends JFrame
 	private void createScreen(){
 		getContentPane().setLayout(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setBackground(Color.black);
 		this.setSize(WindowSize[0], WindowSize[1]);
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);

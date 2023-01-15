@@ -177,12 +177,10 @@ public class PlayerMatrix {
 	 * @return
 	 */
 	protected boolean checkAllVisible(){
-		for (int x=0; x<4; x++){
 
-			for (int y=0; y<3; y++){
-
-				//check if coord is not empty then check if visible
-				if (this.matrix.get(x).get(y) != null && !this.matrix.get(x).get(y).getVisible())
+		for (List<Card> column : matrix) {
+			for (Card card : column) {
+				if (card != null && !card.getVisible())
 				{
 					lastTurnPLayed = false;
 					return false;
